@@ -1,0 +1,181 @@
+{
+  "site": {
+    "title": "Portfolio",
+    "copyright": "2026 Portfolio. All rights reserved.",
+    "description": "Game Developer portfolio. Specializing in gameplay systems, playable ads, and mobile game development.",
+    "url": "https://yourdomain.com",
+    "ogImage": "assets/media/og-preview.png",
+    "favicon": "assets/media/projects/img/D.png"
+  },
+
+  "hero": {
+    "name": "On Thanh Dat",
+    "tagline": "Game Developer | Playable Developer",
+    "cta": "View My Work"
+  },
+
+  "stats": [
+    { "icon": "⚔️", "value": "auto", "label": "Years EXP", "startDate": "2024-12" },
+    { "icon": "🎮", "value": "3+", "label": "Projects Published" },
+    { "icon": "🎯", "value": "50+", "label": "Playable Ads" }
+
+  ],
+
+  "about": {
+    "description": "Game Developer since 2022, specializing in gameplay systems, playable ads, and mobile game development. Shipped multiple titles across puzzle, platformer, rhythm, and endless runner genres.<br> Currently at Amanotes, building scalable gameplay systems for music games.",
+    "cvLink": "#",
+    "email": "ondat24@gmail.com",
+    "avatar": "assets/media/projects/mp4/avt.mp4",
+    "avatarZoom": 1.5,
+    "avatarOffsetX": -5,
+    "avatarOffsetY": 20,
+    "quote": "Code is temporary, gameplay is forever."
+  },
+
+"skills": [
+  { "icon": "bi-controller", "title": "Game Development", "desc": "Unity, C#, Gameplay Systems, Design Patterns, Physics" },
+  { "icon": "bi-phone", "title": "Playable Ads", "desc": "HTML5, JavaScript, Unity Luna, Ad Network Constraints, Data Tracking" },
+  { "icon": "bi-magic", "title": "Automation & Mass Production", "desc": "Config-driven modules, No-code theming, Template-based production" },
+  { "icon": "bi-cpu", "title": "Optimization & Performance", "desc": "Build size, FPS, Memory/CPU profiling, Texture & Atlas optimization" },
+  { "icon": "bi-code-slash", "title": "Vibe Coding", "desc": "AI-assisted Dev, Rapid Prototyping, Internal AI Tools" },
+  { "icon": "bi-palette", "title": "Game Design", "desc": "Level Design, UI/UX, Balancing, Figma" },
+  { "icon": "bi-gpu-card", "title": "Graphics & Shader", "desc": "Shader Graph, VFX, Particle Systems, 2D/3D" },
+  { "icon": "bi-git", "title": "Production Tools & Pipeline", "desc": "Git, CI/CD, Internal Tools, Firebase" }
+],
+
+  "latestProject": {
+    "title": "Cat Dash: Cute Cat Music Game",
+    "desc": "A 2D rhythm platformer where every move syncs with the music.",
+    "detail": "A fast-paced 2D rhythm platformer where a reckless cat dashes, jumps, and wall-slides through tight obstacle courses, with every action locked to the beat.<br><br>Role: Solo Playable Developer<br>Built a beat-synced gameplay framework that drives obstacles, traps, and camera feedback directly from the music timeline. Implemented lightweight audio analysis and beat-marking tools for level design, plus responsive dash/jump controls with coyote time and input buffering for a tight, game-feel-first experience. Optimized object pooling and sprite batching to maintain a stable 60fps target on mobile devices.<br><br>Created as a polished portfolio project to showcase rhythm-based gameplay design, technical implementation of music sync, and mobile-ready performance",
+    "image": "assets/media/projects/img/catdash.png",
+    "video": "assets/media/projects/mp4/catdash.mp4",
+    "tech": ["Unity", "C#", "Spine", "DOTween", "Physics 2D", "Particles", "Tile Map"],
+    "playStore": "",
+    "appStore": "",
+    "playableUrl": ""
+  },
+
+  "projectCategories": [
+    {
+      "id": "Playable",
+      "label": "Playable Projects",
+      "projects": [
+        {
+          "title": "Project One",
+          "desc": "Short description.",
+          "image": "",
+          "detail": "Full detailed description of the project. Technologies used, challenges, etc.",
+          "video": "assets/media/projects/mp4/catdash.mp4",
+          "tech": ["Unity", "C#", "Luna"],
+          "playStore": "https://play.google.com/store/apps/details?id=example",
+          "appStore": "https://apps.apple.com/app/example/id123456",
+          "playableUrl": "https://ondat24.itch.io/cat-dash-playable"
+        },
+        {
+          "title": "Project Two",
+          "desc": "",
+          "image": "",
+          "detail": "Full detailed description here.",
+          "video": "",
+          "tech": [],
+          "playStore": "https://play.google.com/store/apps/details?id=example",
+          "appStore": "https://apps.apple.com/app/example/id123456",
+          "playableUrl": ""
+        },
+        {
+          "title": "Project Three",
+          "desc": "Short description.",
+          "image": "",
+          "detail": "Full detailed description here.",
+          "video": "",
+          "tech": [],
+          "playStore": "",
+          "appStore": "",
+          "playableUrl": ""
+        },
+        {
+          "title": "Project Four",
+          "desc": "Short description.",
+          "image": "",
+          "detail": "Full detailed description here.",
+          "video": "",
+          "tech": [],
+          "playStore": "",
+          "appStore": "",
+          "playableUrl": ""
+        }
+      ]
+    },
+    {
+      "id": "Product",
+      "label": "Product Projects",
+      "projects": [
+        {
+          "title": "Design One",
+          "desc": "Short description.",
+          "image": "",
+          "detail": "Full detailed description here.",
+          "video": "",
+          "tech": [],
+          "playStore": "",
+          "appStore": "",
+          "playableUrl": ""
+        },
+        {
+          "title": "Design Two",
+          "desc": "Short description.",
+          "image": "",
+          "detail": "Full detailed description here.",
+          "video": "",
+          "tech": [],
+          "playStore": "",
+          "appStore": "",
+          "playableUrl": ""
+        },
+        {
+          "title": "Design Three",
+          "desc": "Short description.",
+          "image": "",
+          "detail": "",
+          "video": "",
+          "tech": [],
+          "playStore": "",
+          "appStore": "",
+          "playableUrl": ""
+        },
+        {
+          "title": "Design Four",
+          "desc": "Short description.",
+          "image": "",
+          "detail": "",
+          "video": "",
+          "tech": [],
+          "playStore": "",
+          "appStore": "",
+          "playableUrl": ""
+        }
+      ]
+    }
+  ],
+
+  "timeline": [
+    {
+      "period": "2025 - Present",
+      "role": "Playable Ads Developer",
+      "company": "Amanotes",
+      "desc": "Building playable ads for music games. Config-driven production, optimization, cross-network deployment."
+    },
+    {
+      "period": "2023 - 2025",
+      "role": "Unity Game Developer",
+      "company": "MoPa Games / Indie",
+      "desc": "Developed and published multiple mobile games across puzzle, platformer genres."
+    }
+  ],
+
+  "socials": [
+    { "icon": "bi-github", "link": "https://github.com/ondat2401" },
+    { "icon": "bi-linkedin", "link": "https://www.linkedin.com/in/daton2401/" },
+    { "icon": "bi-envelope-fill", "link": "mailto:ondat24@gmail.com" }
+  ]
+}
