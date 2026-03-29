@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const res = await fetch('data/config.json');
   const config = await res.json();
 
-  renderHero(config.hero);
+  renderHero(config.hero, config.about.cvLink);
   renderSectionTitles(config.sectionTitles);
   renderStats(config.stats);
   renderAbout(config.about);  renderSkills(config.skills);
@@ -21,6 +21,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderFooter(config.site, config.socials);
 
   document.title = config.site.title;
+
+  // Set nav CV button
+  const navCv = document.getElementById('navCvBtn');
+  if (navCv && config.about.cvLink) navCv.href = config.about.cvLink;
 
   // Set meta tags from config
   const site = config.site;
@@ -48,11 +52,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // --- Renderers ---
 
-function renderHero({ name, tagline, cta }) {
+function renderHero({ name, tagline, cta }, cvLink) {
   document.getElementById('heroContent').innerHTML = `
     <h1 class="display-3 fw-bold">Hi, I'm <span class="text-primary">${name}</span></h1>
     <p class="lead mt-3">${tagline}</p>
-    <a href="#projects" class="btn btn-primary btn-lg mt-4">${cta}</a>
+    <div class="d-flex gap-3 justify-content-center mt-4">
+      <a href="#projects" class="btn btn-primary btn-lg">${cta}</a>
+      ${cvLink ? `<a href="${cvLink}" target="_blank" class="btn btn-primary btn-lg">View CV</a>` : ''}
+    </div>
     <div class="mt-5 rpg-stats-bar" id="statsBar"></div>
     <div class="scroll-hint mt-4">
       <span>Press ▼ to continue</span>
@@ -117,7 +124,6 @@ function renderAbout({ description, cvLink, avatar, avatarZoom, avatarOffsetX, a
   }
   document.getElementById('aboutText').innerHTML = `
     <p class="fs-5">${description}</p>
-    <a href="${cvLink}" class="btn btn-outline-primary mt-3">Download CV</a>
     ${quote ? `<div class="about-quote mt-4"><span>"${quote}"</span></div>` : ''}
   `;
 }

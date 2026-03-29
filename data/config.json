@@ -3,7 +3,7 @@
     "title": "OTD-Portfolio",
     "copyright": "2026 Portfolio. All rights reserved.",
     "description": "Game Developer portfolio. Specializing in gameplay systems, playable ads, and mobile game development.",
-    "url": "https://yourdomain.com",
+    "url": "https://ondat2401.github.io/portfolio/",
     "ogImage": "assets/media/og-preview.png",
     "favicon": "assets/media/projects/img/D.png"
   },
@@ -40,7 +40,7 @@
   ],
   "about": {
     "description": "Game Developer since 2022, specializing in gameplay systems, playable ads, and mobile game development. Shipped multiple titles across puzzle, platformer, rhythm, and endless runner genres.<br> Currently at Amanotes, building scalable gameplay systems for music games.",
-    "cvLink": "#",
+    "cvLink": "assets/media/projects/pdf/Ôn Thành Đạt.pdf",
     "email": "ondat24@gmail.com",
     "avatar": "assets/media/projects/mp4/avt.mp4",
     "avatarZoom": 1.5,

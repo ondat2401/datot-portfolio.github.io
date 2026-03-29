@@ -78,6 +78,19 @@ h1, h2, h3, h4, h5 {
   text-shadow: var(--glow-primary);
 }
 
+.navbar-nav .nav-link.nav-cv-btn {
+  background: var(--color-primary);
+  color: #0a2a3a !important;
+  border-radius: 4px;
+  padding: 6px 12px;
+}
+
+.navbar-nav .nav-link.nav-cv-btn:hover {
+  background: #e6b800;
+  color: #0a2a3a !important;
+  text-shadow: none !important;
+}
+
 /* --- Section Titles --- */
 .section-title {
   position: relative;
