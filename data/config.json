@@ -363,6 +363,10 @@
   ],
   "socials": [
     {
+      "icon": "bi-joystick",
+      "link": "https://ondat24.itch.io"
+    },
+    {
       "icon": "bi-github",
       "link": "https://github.com/ondat2401"
     },
