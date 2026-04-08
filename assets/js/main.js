@@ -222,7 +222,7 @@ function renderHighlights(projects) {
     return `
       <div class="highlight-item row align-items-center g-4 mb-5${reverse}" data-index="${i}">
         <div class="col-lg-7">
-          <div class="latest-project-media ratio ratio-16x9" style="overflow: hidden; border-radius: 4px; border: 2px solid var(--color-primary); box-shadow: var(--glow-primary);">
+          <div class="latest-project-media ratio ratio-16x9" style="overflow: hidden; border-radius: 4px; border: 2px solid var(--color-primary); box-shadow: var(--glow-primary); position: relative;">
             ${project.image
               ? `<img src="${project.image}" alt="${project.title}" class="latest-thumb" style="object-fit: cover;">`
               : `<div class="d-flex align-items-center justify-content-center bg-dark latest-thumb">
@@ -239,12 +239,13 @@ function renderHighlights(projects) {
               </div>
             ` : ''}
           </div>
+          ${project.playable && project.playableFiles && project.playableFiles.length > 1 ? `<div class="playable-count-badge"><i class="bi bi-stack"></i> ${project.playableFiles.length}</div>` : ''}
         </div>
         <div class="col-lg-5">
           <h3 style="font-size: 0.9rem; color: var(--color-primary); text-shadow: var(--glow-primary);">${project.title}</h3>
           <p class="mt-3 latest-project-desc">${project.desc}</p>
           <div class="d-flex gap-3 flex-wrap mt-3">
-            ${project.playable && project.playableFile ? `<button class="btn btn-sm btn-outline-warning btn-play-now"><i class="bi bi-play-fill"></i> Play Now</button>` : ''}
+            ${project.playable && project.playableFiles && project.playableFiles.length ? `<button class="btn btn-sm btn-outline-warning btn-play-now"><i class="bi bi-play-fill"></i> Play Now</button>` : ''}
             <button class="btn btn-sm btn-outline-primary btn-detail btn-latest-detail">Detail</button>
           </div>
         </div>
@@ -341,13 +342,14 @@ function renderProjectPage(cat, animate = true, direction = 'next') {
             <iframe data-src="${p.video}" style="width:100%;height:100%;border:none;" allow="autoplay"></iframe>
           </div>` : ''}
         </div>
+        ${p.playable && p.playableFiles && p.playableFiles.length > 1 ? `<div class="playable-count-badge"><i class="bi bi-stack"></i> ${p.playableFiles.length}</div>` : ''}
         <div class="card-body d-flex align-items-center justify-content-between py-2 px-3">
           <div>
             <h5 class="card-title mb-0">${p.title}</h5>
             ${p.tech && p.tech.length ? `<div class="tech-tags mt-1">${p.tech.map(t => `<span class="tech-tag">${t}</span>`).join('')}</div>` : ''}
           </div>
           <div class="d-flex gap-2">
-            ${p.playable && p.playableFile ? `<button class="btn btn-sm btn-play-now" data-cat="${cat.id}" data-idx="${idx}"><i class="bi bi-play-fill"></i> Play</button>` : ''}
+            ${p.playable && p.playableFiles && p.playableFiles.length ? `<button class="btn btn-sm btn-play-now" data-cat="${cat.id}" data-idx="${idx}"><i class="bi bi-play-fill"></i> Play</button>` : ''}
             <button class="btn btn-sm btn-outline-primary btn-detail" data-cat="${cat.id}" data-idx="${idx}">
               Detail
             </button>
@@ -504,8 +506,8 @@ function showProjectModal(project) {
       <i class="bi bi-apple"></i> App Store
     </a>`);
   }
-  if (project.playable && project.playableFile) {
-    links.push(`<button class="btn btn-outline-warning btn-play-modal" onclick="closeModalAndPlay(this)" data-file="${project.playableFile}" data-title="${project.title}">
+  if (project.playable && project.playableFiles && project.playableFiles.length) {
+    links.push(`<button class="btn btn-outline-warning btn-play-modal" onclick="closeModalAndPlay(this)" data-files='${JSON.stringify(project.playableFiles)}' data-title="${project.title}">
       <i class="bi bi-play-fill"></i> Play Now
     </button>`);
   }
@@ -716,46 +718,106 @@ function initParticles() {
 
 // --- Playable Overlay ---
 
+let currentPlayableFiles = [];
+let currentPlayableIndex = 0;
+
 function closeModalAndPlay(btn) {
-  const file = btn.dataset.file;
+  const files = JSON.parse(btn.dataset.files);
   const title = btn.dataset.title;
   const modal = bootstrap.Modal.getInstance(document.getElementById('projectModal'));
   if (modal) modal.hide();
-  setTimeout(() => openPlayable({ playableFile: file, title }), 300);
+  setTimeout(() => openPlayable({ playableFiles: files, title }), 300);
 }
 
 function openPlayable(project) {
-  const file = project.playableFile;
-  if (!file) return;
+  const files = project.playableFiles;
+  if (!files || !files.length) return;
 
-  // External URL → open in new tab
-  if (file.startsWith('http://') || file.startsWith('https://')) {
-    window.open(file, '_blank');
+  // If all files are external, open random one in new tab
+  const localFiles = files.filter(f => !f.startsWith('http://') && !f.startsWith('https://'));
+  if (localFiles.length === 0) {
+    const randomFile = files[Math.floor(Math.random() * files.length)];
+    window.open(randomFile, '_blank');
     return;
   }
 
-  // Local file → embed in overlay
+  // Pick random local file to start
+  currentPlayableFiles = files;
+  currentPlayableIndex = Math.floor(Math.random() * files.length);
+
   const overlay = document.getElementById('playableOverlay');
   const frame = document.getElementById('playableFrame');
   const title = document.getElementById('playableTitle');
   const container = document.getElementById('playableContainer');
 
   title.textContent = project.title;
-  frame.src = file;
+  loadPlayableAtIndex(currentPlayableIndex);
   container.dataset.ratio = '9:16';
   document.getElementById('btnRatio916').classList.add('active');
   document.getElementById('btnRatio169').classList.remove('active');
   overlay.classList.add('active');
   document.body.style.overflow = 'hidden';
+
+  renderPlayableBar();
+}
+
+function loadPlayableAtIndex(index) {
+  const file = currentPlayableFiles[index];
+  if (!file) return;
+  if (file.startsWith('http://') || file.startsWith('https://')) {
+    window.open(file, '_blank');
+    return;
+  }
+  const frame = document.getElementById('playableFrame');
+  frame.src = file;
+  currentPlayableIndex = index;
+  renderPlayableBar();
+}
+
+function renderPlayableBar() {
+  const bar = document.getElementById('playableNavBar');
+  if (!bar) return;
+
+  const total = currentPlayableFiles.length;
+  if (total <= 1) {
+    bar.style.display = 'none';
+    return;
+  }
+
+  bar.style.display = 'flex';
+  const idx = currentPlayableIndex;
+
+  let html = `<button class="playable-nav-btn" data-dir="prev" ${idx === 0 ? 'disabled' : ''}><i class="bi bi-chevron-left"></i></button>`;
+  for (let i = 0; i < total; i++) {
+    html += `<button class="playable-nav-num ${i === idx ? 'active' : ''}" data-idx="${i}">${i + 1}</button>`;
+  }
+  html += `<button class="playable-nav-btn" data-dir="next" ${idx >= total - 1 ? 'disabled' : ''}><i class="bi bi-chevron-right"></i></button>`;
+
+  bar.innerHTML = html;
+
+  bar.querySelectorAll('.playable-nav-num').forEach(btn => {
+    btn.addEventListener('click', () => loadPlayableAtIndex(parseInt(btn.dataset.idx)));
+  });
+  bar.querySelectorAll('.playable-nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const dir = btn.dataset.dir;
+      const newIdx = currentPlayableIndex + (dir === 'next' ? 1 : -1);
+      if (newIdx >= 0 && newIdx < currentPlayableFiles.length) loadPlayableAtIndex(newIdx);
+    });
+  });
 }
 
 function closePlayable() {
   const overlay = document.getElementById('playableOverlay');
   const frame = document.getElementById('playableFrame');
+  const bar = document.getElementById('playableNavBar');
 
   overlay.classList.remove('active');
   frame.src = '';
   document.body.style.overflow = '';
+  currentPlayableFiles = [];
+  currentPlayableIndex = 0;
+  if (bar) { bar.style.display = 'none'; bar.innerHTML = ''; }
 }
 
 // Close button
@@ -778,7 +840,7 @@ document.getElementById('btnRatio169')?.addEventListener('click', () => {
 // Reload button
 document.getElementById('btnPlayableReload')?.addEventListener('click', () => {
   const frame = document.getElementById('playableFrame');
-  const src = frame.src;
+  const src = currentPlayableFiles[currentPlayableIndex];
   frame.src = '';
   requestAnimationFrame(() => { frame.src = src; });
 });
@@ -791,28 +853,35 @@ document.addEventListener('keydown', (e) => {
 // --- Scroll Reveal (storytelling scroll) ---
 
 function initScrollReveal() {
-  const observer = new IntersectionObserver((entries) => {
+  // Fade-in observer: threshold nhỏ, rootMargin chặt
+  const showObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-      } else {
-        // Fade out khi scroll ra khỏi viewport -> cảm giác lướt truyện
-        entry.target.classList.remove('is-visible');
-      }
+      if (entry.isIntersecting) entry.target.classList.add('is-visible');
     });
   }, {
     threshold: 0.15,
     rootMargin: '0px 0px -60px 0px'
   });
 
-  // Observe tất cả elements có class scroll-reveal
-  document.querySelectorAll('.scroll-reveal').forEach((el) => observer.observe(el));
+  // Fade-out observer: rootMargin rộng hơn nhiều → chỉ ẩn khi đã ra xa viewport
+  const hideObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) entry.target.classList.remove('is-visible');
+    });
+  }, {
+    threshold: 0,
+    rootMargin: '120px 0px 120px 0px'
+  });
+
+  const observeEl = (el) => { showObserver.observe(el); hideObserver.observe(el); };
+
+  document.querySelectorAll('.scroll-reveal').forEach(observeEl);
 
   // Observe lại khi có dynamic content (projects render sau)
   const mutationObs = new MutationObserver(() => {
     document.querySelectorAll('.scroll-reveal:not(.observed)').forEach((el) => {
       el.classList.add('observed');
-      observer.observe(el);
+      observeEl(el);
     });
   });
 

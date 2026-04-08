@@ -904,3 +904,79 @@ section {
   border: none;
   display: block;
 }
+
+/* --- Playable Nav Bar (bottom selector) --- */
+.playable-nav-bar {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--color-bg-card);
+  border-top: 2px solid var(--color-primary);
+  box-shadow: 0 -2px 12px #ffcc0033;
+  flex-shrink: 0;
+}
+
+.playable-nav-btn,
+.playable-nav-num {
+  background: none;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  min-width: 32px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity var(--transition-speed), background var(--transition-speed), color var(--transition-speed);
+}
+
+.playable-nav-btn:hover:not(:disabled),
+.playable-nav-num:hover:not(.active) {
+  background: var(--color-primary);
+  color: var(--color-bg-dark);
+}
+
+.playable-nav-num.active {
+  background: var(--color-primary);
+  color: var(--color-bg-dark);
+}
+
+.playable-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* --- Playable Count Badge --- */
+.project-card,
+.col-lg-7 {
+  position: relative;
+}
+
+.playable-count-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(10, 10, 26, 0.85);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  font-family: var(--font-pixel);
+  font-size: 0.45rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  box-shadow: 0 0 8px #ffcc0044;
+  pointer-events: none;
+}
+
+.playable-count-badge i {
+  font-size: 0.55rem;
+}
