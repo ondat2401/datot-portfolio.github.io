@@ -1,0 +1,21 @@
+{
+  "loading": {
+    "icon": "assets/media/projects/img/console.png",
+    "text": "Loading..."
+  },
+  "cursor": {
+    "default": "assets/media/projects/img/pixelhand.png",
+    "size": 24
+  },
+  "typing": {
+    "phrases": [
+      "Game Developer",
+      "Playable Developer",
+      "Unity Developer"
+    ],
+    "typeSpeed": 20,
+    "deleteSpeed": 15,
+    "pauseDuration": 2000,
+    "startDelay": 400
+  }
+}

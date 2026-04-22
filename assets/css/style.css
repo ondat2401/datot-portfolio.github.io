@@ -980,3 +980,952 @@ section {
 .playable-count-badge i {
   font-size: 0.55rem;
 }
+
+/* --- Modal Meta Row (Duration + Role) --- */
+.modal-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.duration-badge {
+  font-family: var(--font-pixel);
+  font-size: 0.45rem;
+  color: var(--color-primary);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-primary);
+  border-radius: 4px;
+  padding: 4px 10px;
+  text-shadow: var(--glow-primary);
+}
+
+.role-badge {
+  font-family: var(--font-pixel);
+  font-size: 0.45rem;
+  color: var(--color-secondary);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-secondary);
+  border-radius: 4px;
+  padding: 4px 10px;
+  text-shadow: var(--glow-cyan);
+}
+
+/* --- Impact Section --- */
+.impact-section {
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+
+.impact-section h6 {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--color-primary);
+  text-shadow: var(--glow-primary);
+  margin-bottom: 10px;
+}
+
+.impact-item {
+  margin-bottom: 8px;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.impact-item strong {
+  color: var(--color-text);
+}
+
+/* --- Hypothesis Section --- */
+.hypothesis-section {
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+
+.hypothesis-section h6 {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--color-primary);
+  text-shadow: var(--glow-primary);
+  margin-bottom: 10px;
+}
+
+.hypothesis-card {
+  background: var(--color-bg-card);
+  border: 1px solid #333355;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.hypothesis-card h6 {
+  font-family: var(--font-pixel);
+  font-size: 0.45rem;
+  color: var(--color-text);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-shadow: none;
+}
+
+.hypothesis-card p {
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+}
+
+.hypothesis-status {
+  font-family: var(--font-pixel);
+  font-size: 0.35rem;
+  padding: 2px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.hypothesis-status--adopted {
+  color: var(--color-secondary);
+  border: 1px solid var(--color-secondary);
+}
+
+.hypothesis-status--rejected {
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+/* --- Metrics Section --- */
+.metrics-section {
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+
+.metrics-section h6 {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--color-primary);
+  text-shadow: var(--glow-primary);
+  margin-bottom: 10px;
+}
+
+.metric-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid #222244;
+}
+
+.metric-item:last-child {
+  border-bottom: none;
+}
+
+.metric-item .metric-label {
+  font-family: var(--font-pixel);
+  font-size: 0.4rem;
+  color: var(--color-text);
+  min-width: 60px;
+}
+
+.metric-trend--up {
+  color: var(--color-secondary);
+  font-weight: bold;
+}
+
+.metric-trend--down-good {
+  color: var(--color-secondary);
+  font-weight: bold;
+}
+
+.metric-trend--down-bad {
+  color: var(--color-danger);
+  font-weight: bold;
+}
+
+/* --- Responsive: Impact sections --- */
+@media (max-width: 768px) {
+  .hypothesis-card {
+    width: 100%;
+  }
+
+  .metric-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+/* ========================================
+   Light Theme Overrides
+   ======================================== */
+
+/* --- Smooth Theme Transition --- */
+html {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* --- Floating Theme Toggle Button --- */
+.theme-toggle-btn {
+  position: fixed;
+  top: 64px;
+  right: 16px;
+  z-index: 1040;
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  font-size: 1rem;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--color-primary);
+  color: var(--color-bg-dark);
+  box-shadow: var(--glow-primary);
+}
+
+.theme-toggle-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* --- Light Theme CSS Variables --- */
+html.light-theme {
+  --color-bg-dark: #f5f5fa;
+  --color-bg-card: #ffffff;
+  --color-bg-section: #eeeef5;
+  --color-text: #2d2d44;
+  --color-text-muted: #6b6b8a;
+  --color-primary: #7c5cbf;
+  --color-secondary: #2a8a9e;
+  --color-danger: #d94452;
+  --glow-primary: 0 0 6px rgba(124, 92, 191, 0.3);
+  --glow-cyan: 0 0 6px rgba(42, 138, 158, 0.3);
+}
+
+/* --- Navbar --- */
+html.light-theme .navbar {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-bottom: 3px solid var(--color-primary);
+  box-shadow: 0 2px 12px rgba(124, 92, 191, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+html.light-theme .navbar-nav .nav-link {
+  color: #2d2d44 !important;
+}
+
+html.light-theme .navbar-nav .nav-link:hover,
+html.light-theme .navbar-nav .nav-link.active {
+  color: var(--color-primary) !important;
+}
+
+html.light-theme .navbar-nav .nav-link.nav-cv-btn {
+  background: var(--color-primary);
+  color: #fff !important;
+}
+
+html.light-theme .navbar-nav .nav-link.nav-cv-btn:hover {
+  background: #6a4daa;
+  color: #fff !important;
+}
+
+html.light-theme .navbar-brand {
+  color: var(--color-primary) !important;
+}
+
+html.light-theme .navbar-toggler {
+  border-color: rgba(45, 45, 68, 0.3);
+}
+
+html.light-theme .navbar-toggler-icon {
+  filter: invert(1) grayscale(100%) brightness(0.3);
+}
+
+/* --- Scanline --- */
+html.light-theme .scanline-overlay {
+  opacity: 0;
+}
+
+/* --- Remove glow/text-shadow in light theme --- */
+html.light-theme .hero-section h1,
+html.light-theme .navbar-brand,
+html.light-theme .section-title,
+html.light-theme .rpg-stat-value,
+html.light-theme .about-quote,
+html.light-theme .timeline-period,
+html.light-theme .modal-title,
+html.light-theme .playable-title,
+html.light-theme .impact-section h6,
+html.light-theme .hypothesis-section h6,
+html.light-theme .metrics-section h6,
+html.light-theme .duration-badge,
+html.light-theme .btn-play-now,
+html.light-theme .hero-section .lead,
+html.light-theme .project-category h3,
+html.light-theme .timeline-company,
+html.light-theme .role-badge {
+  text-shadow: none;
+}
+
+/* --- Body & Sections --- */
+html.light-theme body {
+  background: var(--color-bg-dark);
+  color: var(--color-text);
+}
+
+html.light-theme .bg-light {
+  background: var(--color-bg-section) !important;
+}
+
+/* --- Hero --- */
+html.light-theme .hero-section .lead {
+  color: var(--color-secondary);
+}
+
+html.light-theme .hero-section .btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(124, 92, 191, 0.3);
+}
+
+html.light-theme .hero-section .btn-primary:hover {
+  background: #6a4daa;
+}
+
+/* --- Cards --- */
+html.light-theme .skill-card,
+html.light-theme .project-card {
+  background: var(--color-bg-card);
+  border-color: #dddde8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+html.light-theme .skill-card:hover {
+  border-color: var(--color-secondary);
+}
+
+html.light-theme .project-card:hover {
+  border-color: var(--color-primary);
+}
+
+html.light-theme .skill-card h5 {
+  color: var(--color-text);
+}
+
+html.light-theme .skill-card .text-muted {
+  color: var(--color-text-muted) !important;
+}
+
+html.light-theme .skill-card .text-primary {
+  color: var(--color-secondary) !important;
+}
+
+html.light-theme .project-card .card-img-top {
+  background: var(--color-bg-section);
+}
+
+html.light-theme .project-card .card-text {
+  color: var(--color-text-muted) !important;
+}
+
+/* --- RPG Stats --- */
+html.light-theme .rpg-stat-item {
+  background: var(--color-bg-card);
+  border-color: #dddde8;
+}
+
+html.light-theme .rpg-stat-label {
+  color: var(--color-text-muted);
+}
+
+/* --- Modal --- */
+html.light-theme .modal-content {
+  background: var(--color-bg-card);
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+html.light-theme .modal-header {
+  border-bottom-color: #dddde8;
+}
+
+html.light-theme .modal-body {
+  scrollbar-color: var(--color-primary) #f5f5fa;
+}
+
+html.light-theme .modal-body::-webkit-scrollbar-track {
+  background: #f5f5fa;
+}
+
+html.light-theme .modal-body p {
+  color: var(--color-text-muted);
+}
+
+html.light-theme .btn-close {
+  filter: none;
+}
+
+/* --- Form Controls --- */
+html.light-theme .form-control {
+  background: #fff;
+  border-color: #dddde8;
+  color: var(--color-text);
+}
+
+html.light-theme .form-control:focus {
+  background: #fff;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 8px rgba(124, 92, 191, 0.2);
+  color: var(--color-text);
+}
+
+html.light-theme .form-label {
+  color: var(--color-text-muted);
+}
+
+/* --- Buttons --- */
+html.light-theme .btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+html.light-theme .btn-primary:hover {
+  background: #6a4daa;
+  color: #fff;
+}
+
+html.light-theme .btn-outline-primary {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+html.light-theme .btn-outline-primary:hover {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+html.light-theme .btn-play-now {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(124, 92, 191, 0.25);
+}
+
+html.light-theme .btn-play-now:hover {
+  background: #6a4daa;
+}
+
+/* --- Footer --- */
+html.light-theme footer {
+  background: #e8e8f2 !important;
+  border-top-color: var(--color-primary);
+}
+
+html.light-theme footer p {
+  color: var(--color-text-muted);
+}
+
+html.light-theme footer a {
+  color: var(--color-text) !important;
+}
+
+/* --- Tech Tags --- */
+html.light-theme .tech-tag {
+  background: rgba(42, 138, 158, 0.08);
+  color: #1f7a8c;
+  border-color: rgba(42, 138, 158, 0.25);
+}
+
+/* --- Timeline --- */
+html.light-theme .timeline::before {
+  background: #dddde8;
+}
+
+html.light-theme .timeline-dot {
+  border-color: var(--color-bg-card);
+}
+
+html.light-theme .timeline-card {
+  background: var(--color-bg-card);
+  border-color: #dddde8;
+}
+
+html.light-theme .timeline-card:hover {
+  border-color: var(--color-primary);
+}
+
+html.light-theme .timeline-desc {
+  color: var(--color-text-muted);
+}
+
+html.light-theme .timeline-company {
+  color: var(--color-secondary);
+}
+
+/* --- About --- */
+html.light-theme .about-quote {
+  color: var(--color-primary);
+  border-left-color: var(--color-primary);
+}
+
+/* --- Project Category --- */
+html.light-theme .project-category h3 {
+  color: var(--color-secondary);
+}
+
+/* --- Section Title --- */
+html.light-theme .section-title::after {
+  color: var(--color-primary);
+}
+
+/* --- Playable Overlay --- */
+html.light-theme .playable-header {
+  background: var(--color-bg-card);
+  border-bottom-color: var(--color-primary);
+}
+
+html.light-theme .playable-nav-bar {
+  background: var(--color-bg-card);
+  border-top-color: var(--color-primary);
+}
+
+html.light-theme .playable-count-badge {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+/* --- Badges --- */
+html.light-theme .duration-badge {
+  background: var(--color-bg-section);
+}
+
+html.light-theme .role-badge {
+  background: var(--color-bg-section);
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+html.light-theme .hypothesis-status--adopted {
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+/* --- Hypothesis & Metrics --- */
+html.light-theme .hypothesis-card {
+  background: var(--color-bg-section);
+  border-color: #dddde8;
+}
+
+html.light-theme .metric-item {
+  border-bottom-color: #dddde8;
+}
+
+html.light-theme .impact-item strong {
+  color: var(--color-text);
+}
+
+/* --- Misc --- */
+html.light-theme .scroll-hint {
+  color: var(--color-text-muted);
+}
+
+html.light-theme .latest-project-desc {
+  color: var(--color-text-muted);
+}
+
+
+/* --- Light Theme: Fix white text on light backgrounds --- */
+
+/* Hero "Hi, I'm" text — container has Bootstrap text-white */
+html.light-theme .hero-section .text-white {
+  color: var(--color-text) !important;
+}
+
+/* Footer — has bg-dark text-white */
+html.light-theme footer.text-white {
+  color: var(--color-text) !important;
+}
+
+html.light-theme footer .text-white {
+  color: var(--color-text) !important;
+}
+
+/* Social links in footer */
+html.light-theme footer a.text-white {
+  color: var(--color-text) !important;
+}
+
+/* App Store button in project modal */
+html.light-theme .btn-outline-light {
+  color: var(--color-text);
+  border-color: var(--color-text-muted);
+}
+
+html.light-theme .btn-outline-light:hover {
+  background: var(--color-text);
+  color: #fff;
+  border-color: var(--color-text);
+}
+
+/* Project card placeholder icon */
+html.light-theme .project-thumb .text-white {
+  color: var(--color-text-muted) !important;
+}
+
+/* --- Light Theme: Google Play & Play Now modal buttons --- */
+html.light-theme .btn-outline-gplay {
+  color: #1a8a4a;
+  border-color: #1a8a4a;
+}
+
+html.light-theme .btn-outline-gplay:hover {
+  background: #1a8a4a;
+  color: #fff;
+}
+
+html.light-theme .modal .btn-outline-warning {
+  color: #8a6d1b;
+  border-color: #8a6d1b;
+}
+
+html.light-theme .modal .btn-outline-warning:hover {
+  background: #8a6d1b;
+  color: #fff;
+}
+
+/* ========================================
+   FEATURE: Loading Screen (Retro)
+   ======================================== */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: var(--color-bg-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loading-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-pixel-art {
+  animation: loading-bounce 0.8s ease-in-out infinite alternate;
+  margin-bottom: 24px;
+  background: transparent;
+}
+
+@keyframes loading-bounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-12px); }
+}
+
+.loading-bar-container {
+  width: 220px;
+  height: 16px;
+  border: 2px solid var(--color-primary);
+  background: var(--color-bg-card);
+  position: relative;
+  overflow: hidden;
+  image-rendering: pixelated;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--color-primary);
+  box-shadow: var(--glow-primary);
+  transition: width 0.15s steps(20);
+}
+
+.loading-text {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--color-primary);
+  text-shadow: var(--glow-primary);
+  margin-top: 12px;
+  animation: loading-blink 1s steps(2) infinite;
+}
+
+@keyframes loading-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ========================================
+   FEATURE: Typing Effect
+   ======================================== */
+.typing-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  background: var(--color-secondary);
+  margin-left: 2px;
+  animation: cursor-blink 0.7s steps(2) infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ========================================
+   FEATURE: RPG Skill Bars
+   ======================================== */
+.skill-bar-card {
+  background: var(--color-bg-card);
+  border: 2px solid #222244;
+  border-radius: 4px;
+  padding: 16px;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed), border-color var(--transition-speed);
+}
+
+.skill-bar-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-secondary);
+  box-shadow: var(--glow-cyan);
+}
+
+.skill-bar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.skill-bar-header i {
+  font-size: 1.4rem;
+  color: var(--color-secondary);
+}
+
+.skill-bar-header h5 {
+  font-size: 0.6rem;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.skill-bar-desc {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+}
+
+.skill-bar-track {
+  width: 100%;
+  height: 12px;
+  background: #0a0a2a;
+  border: 1px solid #333355;
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.skill-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
+  box-shadow: 0 0 8px var(--color-secondary);
+  transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  image-rendering: pixelated;
+}
+
+.skill-bar-fill::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #fff;
+  opacity: 0.6;
+  animation: bar-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes bar-shimmer {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+.skill-bar-level {
+  font-family: var(--font-pixel);
+  font-size: 0.4rem;
+  color: var(--color-primary);
+  text-align: right;
+  margin-top: 4px;
+}
+
+.skill-bar-fill.animated {
+  width: var(--target-width);
+}
+
+/* ========================================
+   FEATURE: Project Filter Tabs
+   ======================================== */
+.project-filter-bar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.filter-btn {
+  font-family: var(--font-pixel);
+  font-size: 0.45rem;
+  padding: 6px 16px;
+  border: 2px solid #333355;
+  background: var(--color-bg-card);
+  color: var(--color-text-muted);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+}
+
+.filter-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.filter-btn.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #000;
+  box-shadow: var(--glow-primary);
+}
+
+.project-category {
+  transition: opacity 0.4s ease, max-height 0.5s ease;
+  overflow: hidden;
+}
+
+.project-category.filter-hidden {
+  opacity: 0;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none;
+}
+
+.project-category.filter-visible {
+  opacity: 1;
+  max-height: 2000px;
+}
+
+/* ========================================
+   FEATURE: Custom Pixel Cursor (set via JS)
+   ======================================== */
+
+/* ========================================
+   FEATURE: Animated Counter
+   ======================================== */
+.rpg-stat-value[data-count-target] {
+  min-width: 2ch;
+  display: inline-block;
+}
+
+/* ========================================
+   FEATURE: Responsive Improvements
+   ======================================== */
+@media (max-width: 576px) {
+  .hero-section h1 { font-size: 0.85rem; }
+  .hero-section .lead { font-size: 0.45rem; }
+
+  .rpg-stats-bar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .rpg-stat-item {
+    flex: 1 1 calc(33% - 0.5rem);
+    min-width: 80px;
+  }
+
+  .project-filter-bar {
+    gap: 4px;
+  }
+
+  .filter-btn {
+    font-size: 0.35rem;
+    padding: 4px 10px;
+  }
+
+  .skill-bar-card {
+    padding: 12px;
+  }
+
+  .about-avatar {
+    width: 140px;
+    height: 140px;
+  }
+
+  .timeline-card {
+    padding: 12px;
+  }
+
+  .latest-project-desc {
+    font-size: 0.8rem;
+  }
+
+  .playable-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .playable-header-actions {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 400px) {
+  .hero-section h1 { font-size: 0.7rem; }
+  .section-title { font-size: 0.65rem; }
+
+  .rpg-stat-item {
+    flex: 1 1 100%;
+  }
+
+  .navbar-brand { font-size: 0.55rem; }
+}
+
+/* Smooth scroll for all internal links */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Better touch targets on mobile */
+@media (max-width: 768px) {
+  .btn, .filter-btn, .playable-btn, .nav-link {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .project-card .card-body {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .project-card .card-body .d-flex.gap-2 {
+    width: 100%;
+    justify-content: center;
+  }
+}

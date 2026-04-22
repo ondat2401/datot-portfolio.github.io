@@ -112,12 +112,68 @@
       "playable": true,
       "playableFiles": [
         "playables/cat-dash.html"
+      ],
+      "duration": {
+        "from": "2025-01",
+        "to": "Present"
+      },
+      "role": "Solo Playable Developer",
+      "impacts": [
+        {
+          "label": "CPI Reduction",
+          "desc": "Reduced CPI by 70%, bringing the game from near-dead status to close to passing soft launch — still actively running and iterating"
+        },
+        {
+          "label": "Hypothesis-Driven Testing",
+          "desc": "Tested multiple hypotheses not present in the original product, achieving strong results — higher impressions, increased playable completion rates through new effects, redesigned maps with reduced difficulty, and better player feedback"
+        },
+        {
+          "label": "Wordless Tutorial Design",
+          "desc": "Designed tutorial maps that teach players within the first 5–10 seconds without any text, images, or explicit instructions"
+        },
+        {
+          "label": "Skill Illusion Moments",
+          "desc": "Created gameplay situations that make players feel they won through their own skill and ability, boosting engagement and satisfaction"
+        },
+        {
+          "label": "Portrait Mode Pivot",
+          "desc": "Tested hypothesis of switching from the original game's landscape orientation to portrait mode — results were strong enough that the product team published an additional portrait version of the game"
+        }
+      ],
+      "hypotheses": [
+        {
+          "name": "New visual effects & map redesign",
+          "desc": "Added new effects and redesigned maps with reduced difficulty compared to the original game, plus better player feedback",
+          "result": "Higher impressions, increased playable completion rate",
+          "adopted": true
+        },
+        {
+          "name": "Portrait mode (landscape → portrait)",
+          "desc": "Tested switching from the original game's landscape orientation to portrait mode for playable ads",
+          "result": "Strong performance — product team published an additional portrait version of the game",
+          "adopted": true
+        },
+        {
+          "name": "Wordless tutorial in first 5–10s",
+          "desc": "Designed tutorial maps that teach players purely through level design, no text or images needed",
+          "result": "Players understood mechanics quickly, improved early retention",
+          "adopted": true
+        }
+      ],
+      "metrics": [
+        {
+          "label": "CPI",
+          "before": "High",
+          "after": "−70%",
+          "unit": "",
+          "lowerIsBetter": true
+        }
       ]
     },
     {
       "title": "Magic Dance Star: Rhythm Tiles",
-      "desc": "A character-based rhythm dance game where you tap and swipe to hit choreographed moves in sync with the music.",
-      "detail": "A stylish rhythm dance game where you tap, swipe, and hold notes to trigger choreographed moves, timing each input to the beat as your character performs on stage under dynamic lights and camera cuts.<br><br> Role: Solo Playable Developer<br> Built a beatmap-driven gameplay system that syncs character animations, note patterns, combo effects, and camera movements directly to the music timeline. Implemented timing windows, scoring, combo/multiplier logic, and a feedback system (perfect/great/late) to keep the dance gameplay readable and rewarding. Created internal tools to author and preview beatmaps quickly, and optimized animation blending, VFX, and UI tomaintain a smooth 60fps on mobile devices.<br><br> Designed as a portfolio project to demonstrate rhythm-game design, animation–music synchronization, and scalable content pipelines for dance-centric music games.",
+      "desc": "The company's first playable ad combining rhythm gameplay with 3D Audition-style dance mechanics.",
+      "detail": "The company's first playable ad combining rhythm gameplay with 3D Audition-style dance mechanics. Features polished visual effects and audio feedback that recreate the feel of the original game, with multiple 3D character models optimized to keep the total build size under 5MB.<br><br>Role: Solo Playable Developer<br>Currently in soft launch phase.",
       "image": "assets/media/projects/img/dancestar.jpg",
       "video": "assets/media/projects/mp4/gmtp.mp4",
       "tech": [
@@ -130,9 +186,28 @@
         "Particles"
       ],
       "playStore": "https://play.google.com/store/apps/details?id=com.musicgame.magicdance",
-      "appStore": "https://apps.apple.com/vn/app/magic-dance-star-rhythm-tiles/id6755515737 ",
+      "appStore": "https://apps.apple.com/vn/app/magic-dance-star-rhythm-tiles/id6755515737",
       "playable": true,
-      "playableFiles": ["playables/gmtp.html"]
+      "playableFiles": ["playables/gmtp.html"],
+      "duration": {
+        "from": "2025-03",
+        "to": "Present"
+      },
+      "role": "Solo Playable Developer",
+      "impacts": [
+        {
+          "label": "First 3D Rhythm Playable",
+          "desc": "Built the company's first playable ad combining rhythm mechanics with 3D Audition-style dance gameplay"
+        },
+        {
+          "label": "Visual & Audio Fidelity",
+          "desc": "Rich visual effects and audio feedback that recreate the feel of the original game within a playable ad"
+        },
+        {
+          "label": "3D Model Optimization",
+          "desc": "Multiple 3D character models optimized to keep total build size under 5MB"
+        }
+      ]
     }
   ],
   "projectCategories": [
@@ -158,7 +233,12 @@
           "playStore": "https://play.google.com/store/apps/details?id=com.amanotes.beathopper&hl=en",
           "appStore": "https://apps.apple.com/us/app/tiles-hop-music-ball-clash/id1344702806",
           "playable": true,
-          "playableFiles": ["playables/bh.html","playables/bh2.html"]
+          "playableFiles": ["playables/bh.html","playables/bh2.html"],
+          "duration": {
+            "from": "2025-02",
+            "to": "2025-05"
+          },
+          "role": "Solo Playable Developer"
         },
         {
           "title": "Dancing Road: Color Ball Run",

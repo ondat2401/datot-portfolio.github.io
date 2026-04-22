@@ -8,17 +8,47 @@ const pageState = {}; // track current page per category
 let allCategories = []; // store for modal lookup
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // --- Load UI Config first (for loading screen) ---
+  let uiConfig = {};
+  try {
+    const uiRes = await fetch('data/ui-config.json');
+    uiConfig = await uiRes.json();
+  } catch (e) { /* fallback to defaults */ }
+
+  // --- Apply loading screen icon & text from config ---
+  const loadingIcon = document.getElementById('loadingIcon');
+  const loadingTextEl = document.getElementById('loadingText');
+  if (loadingIcon && uiConfig.loading?.icon) loadingIcon.src = uiConfig.loading.icon;
+  if (loadingTextEl && uiConfig.loading?.text) loadingTextEl.textContent = uiConfig.loading.text;
+
+  // --- Loading Screen ---
+  const loadingBar = document.getElementById('loadingBarFill');
+  const loadingScreen = document.getElementById('loadingScreen');
+  let loadProgress = 0;
+  const setLoadProgress = (pct) => {
+    loadProgress = pct;
+    if (loadingBar) loadingBar.style.width = pct + '%';
+  };
+  setLoadProgress(10);
+
   const res = await fetch('data/config.json');
+  setLoadProgress(30);
   const config = await res.json();
+  setLoadProgress(50);
 
   renderHero(config.hero, config.about.cvLink);
   renderSectionTitles(config.sectionTitles);
   renderStats(config.stats);
-  renderAbout(config.about);  renderSkills(config.skills);
+  setLoadProgress(60);
+  renderAbout(config.about);
+  renderSkills(config.skills);
+  setLoadProgress(70);
   renderHighlights(config.highlights);
   renderProjectCategories(config.projectCategories);
+  setLoadProgress(80);
   renderTimeline(config.timeline);
   renderFooter(config.site, config.socials);
+  setLoadProgress(90);
 
   document.title = config.site.title;
 
@@ -44,10 +74,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   const brand = document.getElementById('navBrand');
   if (brand) brand.textContent = config.hero.name;
 
+  // --- Apply custom cursor from config ---
+  if (uiConfig.cursor?.default) {
+    const size = uiConfig.cursor.size || 24;
+    const cursorUrl = uiConfig.cursor.default;
+    document.documentElement.style.cursor = `url('${cursorUrl}') ${Math.floor(size / 2)} ${Math.floor(size / 2)}, auto`;
+    document.body.style.cursor = `url('${cursorUrl}') ${Math.floor(size / 2)} ${Math.floor(size / 2)}, auto`;
+  }
+
   initNavScroll();
   initContactForm();
   initParticles();
+  initThemeToggle();
   initScrollReveal();
+  initAnimatedCounters();
+  initSkillBarAnimations();
+
+  setLoadProgress(100);
+
+  // Hide loading screen after a short delay
+  const startDelay = uiConfig.typing?.startDelay || 400;
+  setTimeout(() => {
+    if (loadingScreen) loadingScreen.classList.add('hidden');
+    // Start typing effect after loading screen fades
+    setTimeout(() => initTypingEffect(config.hero, uiConfig.typing), startDelay);
+  }, 600);
 });
 
 // --- Renderers ---
@@ -55,7 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 function renderHero({ name, tagline, cta }, cvLink) {
   document.getElementById('heroContent').innerHTML = `
     <h1 class="display-3 fw-bold">Hi, I'm <span class="text-primary">${name}</span></h1>
-    <p class="lead mt-3">${tagline}</p>
+    <p class="lead mt-3"><span id="typingTarget"></span><span class="typing-cursor"></span></p>
     <div class="d-flex gap-3 justify-content-center mt-4">
       <a href="#projects" class="btn btn-primary btn-lg">${cta}</a>
       ${cvLink ? `<a href="${cvLink}" target="_blank" class="btn btn-primary btn-lg">View CV</a>` : ''}
@@ -91,17 +142,28 @@ function renderStats(stats) {
 
   bar.innerHTML = stats.map((s) => {
     let value = s.value;
+    let rawNum = null;
+    let suffix = '';
     if (value === 'auto' && s.startDate) {
       const [y, m] = s.startDate.split('-').map(Number);
       const start = new Date(y, m - 1);
       const now = new Date();
       const years = (now - start) / (1000 * 60 * 60 * 24 * 365.25);
-      value = Math.floor(years) + '+';
+      rawNum = Math.floor(years);
+      suffix = '+';
+      value = rawNum + suffix;
+    } else if (typeof value === 'string') {
+      const match = value.match(/^(\d+)(.*)$/);
+      if (match) {
+        rawNum = parseInt(match[1]);
+        suffix = match[2];
+      }
     }
+    const countAttr = rawNum !== null ? `data-count-target="${rawNum}" data-count-suffix="${suffix}"` : '';
     return `
     <div class="rpg-stat-item">
       <div class="rpg-stat-icon">${s.icon}</div>
-      <div class="rpg-stat-value">${value}</div>
+      <div class="rpg-stat-value" ${countAttr}>${rawNum !== null ? '0' + suffix : value}</div>
       <div class="rpg-stat-label">${s.label}</div>
     </div>
   `}).join('');
@@ -128,7 +190,7 @@ function renderAbout({ description, cvLink, avatar, avatarZoom, avatarOffsetX, a
   `;
 }
 
-const SKILLS_PER_PAGE = 6;
+const SKILLS_PER_PAGE = 9;
 let skillsPage = 0;
 let allSkills = [];
 
@@ -153,15 +215,21 @@ function renderSkillsPage(animate = true, direction = 'next') {
   const items = allSkills.slice(start, start + SKILLS_PER_PAGE);
   const grid = document.getElementById('skillsGrid');
 
-  const html = items.map((s) => `
-    <div class="col-md-4 col-sm-6">
-      <div class="card h-100 text-center p-4 skill-card">
-        <i class="bi ${s.icon} fs-1 text-primary"></i>
-        <h5 class="mt-3">${s.title}</h5>
-        <p class="text-muted">${s.desc}</p>
+  const html = items.map((s) => {
+    return `
+    <div class="col-md-4">
+      <div class="skill-bar-card">
+        <div class="skill-bar-header">
+          <i class="bi ${s.icon}"></i>
+          <h5>${s.title}</h5>
+        </div>
+        <div class="skill-bar-desc">${s.desc}</div>
+        <div class="skill-bar-track">
+          <div class="skill-bar-fill" style="--target-width: 100%"></div>
+        </div>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 
   if (animate) {
     const outClass = direction === 'next' ? 'slide-out-left' : 'slide-out-right';
@@ -174,10 +242,11 @@ function renderSkillsPage(animate = true, direction = 'next') {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => grid.classList.remove(inClass));
       });
+      // Re-trigger bar animations
+      setTimeout(() => initSkillBarAnimations(), 100);
     }, 350);
   } else {
     grid.innerHTML = html;
-    // Lock wrapper height after first render
     requestAnimationFrame(() => {
       grid.closest('.project-grid-wrapper').style.minHeight = grid.offsetHeight + 'px';
     });
@@ -298,10 +367,38 @@ function renderHighlights(projects) {
 function renderProjectCategories(categories) {
   allCategories = categories;
   const container = document.getElementById('projectCategories');
+
+  // Render filter bar
+  const filterBar = document.getElementById('projectFilterBar');
+  if (filterBar && categories.length > 1) {
+    filterBar.innerHTML = `
+      <button class="filter-btn active" data-filter="all">All</button>
+      ${categories.map(cat => `<button class="filter-btn" data-filter="${cat.id}">${cat.label}</button>`).join('')}
+    `;
+
+    filterBar.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+
+        container.querySelectorAll('.project-category').forEach(catEl => {
+          if (filter === 'all' || catEl.dataset.catId === filter) {
+            catEl.classList.remove('filter-hidden');
+            catEl.classList.add('filter-visible');
+          } else {
+            catEl.classList.remove('filter-visible');
+            catEl.classList.add('filter-hidden');
+          }
+        });
+      });
+    });
+  }
+
   container.innerHTML = categories.map((cat) => {
     pageState[cat.id] = 0;
     return `
-      <div class="project-category mb-5">
+      <div class="project-category mb-5 filter-visible" data-cat-id="${cat.id}">
         <h3 class="mb-4">${cat.label}</h3>
         <div class="project-grid-wrapper">
           <div class="row g-4 project-grid-inner" id="grid-${cat.id}"></div>
@@ -462,6 +559,89 @@ function renderProjectPage(cat, animate = true, direction = 'next') {
   });
 }
 
+// --- Project Detail Modal - Helper Functions ---
+
+const renderDurationBadge = (duration) => {
+  if (!duration || !duration.from || !duration.to) return '';
+  const formatDate = (str) => {
+    if (str === 'Present') return 'Present';
+    const [year, month] = str.split('-');
+    return `${month}/${year}`;
+  };
+  return `<span class="duration-badge">⏱ ${formatDate(duration.from)} → ${formatDate(duration.to)}</span>`;
+};
+
+const renderRoleBadge = (role) => {
+  if (!role || !role.trim()) return '';
+  return `<span class="role-badge">🎮 ${role}</span>`;
+};
+
+const renderImpacts = (impacts) => {
+  if (!impacts || !Array.isArray(impacts) || !impacts.length) return '';
+  return `
+    <div class="impact-section">
+      <h6>💡 Key Contributions</h6>
+      ${impacts.map((item) => `
+        <div class="impact-item">
+          <strong>${item.label}:</strong> ${item.desc}
+        </div>
+      `).join('')}
+    </div>
+  `;
+};
+
+const renderHypotheses = (hypotheses) => {
+  if (!hypotheses || !Array.isArray(hypotheses) || !hypotheses.length) return '';
+  return `
+    <div class="hypothesis-section">
+      <h6>🧪 Hypotheses Tested</h6>
+      ${hypotheses.map((h) => {
+        const adopted = h.adopted === true;
+        const statusClass = adopted ? 'hypothesis-status--adopted' : 'hypothesis-status--rejected';
+        const statusText = adopted ? '✓ Adopted' : '✗ Rejected';
+        return `
+          <div class="hypothesis-card">
+            <h6>${h.name} <span class="hypothesis-status ${statusClass}">${statusText}</span></h6>
+            <p>${h.desc}</p>
+            <p><strong>Result:</strong> ${h.result}</p>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+};
+
+const renderMetrics = (metrics) => {
+  if (!metrics || !Array.isArray(metrics) || !metrics.length) return '';
+  return `
+    <div class="metrics-section">
+      <h6>📊 Impact Metrics</h6>
+      ${metrics.map((m) => {
+        let trendHtml = '';
+        const before = Number(m.before);
+        const after = Number(m.after);
+        if (!isNaN(before) && !isNaN(after)) {
+          if (after > before) {
+            trendHtml = `<span class="metric-trend--up">↑</span>`;
+          } else if (after < before) {
+            trendHtml = m.lowerIsBetter
+              ? `<span class="metric-trend--down-good">↓</span>`
+              : `<span class="metric-trend--down-bad">↓</span>`;
+          }
+        }
+        const unit = m.unit || '';
+        return `
+          <div class="metric-item">
+            <span class="metric-label">${m.label}</span>
+            <span>${m.before} → ${m.after}${unit ? ' ' + unit : ''}</span>
+            ${trendHtml}
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+};
+
 // --- Project Detail Modal ---
 
 function showProjectModal(project) {
@@ -487,12 +667,28 @@ function showProjectModal(project) {
     }
   }
 
+  // Meta row (duration + role)
+  const durationHtml = renderDurationBadge(project.duration);
+  const roleHtml = renderRoleBadge(project.role);
+  if (durationHtml || roleHtml) {
+    body += `<div class="modal-meta-row">${durationHtml}${roleHtml}</div>`;
+  }
+
   // Description
   if (project.detail) {
     body += `<p>${project.detail}</p>`;
   } else {
     body += `<p>${project.desc}</p>`;
   }
+
+  // Impacts
+  body += renderImpacts(project.impacts);
+
+  // Hypotheses
+  body += renderHypotheses(project.hypotheses);
+
+  // Metrics
+  body += renderMetrics(project.metrics);
 
   // Store links
   const links = [];
@@ -627,12 +823,32 @@ function initContactForm() {
 
 // --- Particle System ---
 
+// Particle color palettes per theme
+const PARTICLE_COLORS = {
+  dark: ['#ffcc00', '#00e5ff', '#ffb8ff', '#ff4444'],
+  light: ['#cc9900', '#0077aa', '#aa44aa', '#cc2222']
+};
+
+// Shared reference so updateParticleColors() can reach particles
+let _particles = [];
+
+function getParticleColors() {
+  const isDark = !document.documentElement.classList.contains('light-theme');
+  return isDark ? PARTICLE_COLORS.dark : PARTICLE_COLORS.light;
+}
+
+function updateParticleColors() {
+  const colors = getParticleColors();
+  _particles.forEach((p) => {
+    p.color = colors[Math.floor(Math.random() * colors.length)];
+  });
+}
+
 function initParticles() {
   const canvas = document.getElementById('particleCanvas');
   if (!canvas) return;
 
   const ctx = canvas.getContext('2d');
-  let particles = [];
   const PARTICLE_COUNT = 50;
 
   function resize() {
@@ -659,6 +875,7 @@ function initParticles() {
   ];
 
   function createParticle() {
+    const colors = getParticleColors();
     return {
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
@@ -667,22 +884,22 @@ function initParticles() {
       speedX: (Math.random() - 0.5) * 0.3,
       speedY: (Math.random() - 0.5) * 0.3,
       opacity: Math.random() * 0.3 + 0.08,
-      color: ['#ffcc00', '#00e5ff', '#ffb8ff', '#ff4444'][Math.floor(Math.random() * 4)]
+      color: colors[Math.floor(Math.random() * colors.length)]
     };
   }
 
   function init() {
     resize();
-    particles = [];
+    _particles = [];
     for (let i = 0; i < PARTICLE_COUNT; i++) {
-      particles.push(createParticle());
+      _particles.push(createParticle());
     }
   }
 
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    particles.forEach((p) => {
+    _particles.forEach((p) => {
       p.x += p.speedX;
       p.y += p.speedY;
 
@@ -715,6 +932,51 @@ function initParticles() {
   animate();
 }
 
+
+// --- Theme Toggle ---
+
+function initThemeToggle() {
+  const toggleBtn = document.getElementById('themeToggleBtn');
+  if (!toggleBtn) return;
+
+  function getCurrentTheme() {
+    return document.documentElement.classList.contains('light-theme') ? 'light' : 'dark';
+  }
+
+  function setTheme(theme) {
+    if (theme === 'light') {
+      document.documentElement.classList.add('light-theme');
+    } else {
+      document.documentElement.classList.remove('light-theme');
+    }
+
+    try {
+      localStorage.setItem('portfolio-theme', theme);
+    } catch (e) {}
+
+    updateToggleButton();
+    updateParticleColors();
+  }
+
+  function updateToggleButton() {
+    const theme = getCurrentTheme();
+    const icon = toggleBtn.querySelector('i');
+    if (icon) {
+      icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+    }
+    toggleBtn.setAttribute('aria-label',
+      theme === 'dark' ? 'Chuyển sang theme sáng' : 'Chuyển sang theme tối'
+    );
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    const newTheme = getCurrentTheme() === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+  });
+
+  // Sync button state on init
+  updateToggleButton();
+}
 
 // --- Playable Overlay ---
 
@@ -849,6 +1111,103 @@ document.getElementById('btnPlayableReload')?.addEventListener('click', () => {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closePlayable();
 });
+
+// --- Typing Effect ---
+
+function initTypingEffect(hero, typingConfig) {
+  const target = document.getElementById('typingTarget');
+  if (!target) return;
+
+  const cfg = typingConfig || {};
+  const phrases = cfg.phrases || [hero.tagline];
+  const typeSpeed = cfg.typeSpeed || 60;
+  const deleteSpeed = cfg.deleteSpeed || 30;
+  const pauseDuration = cfg.pauseDuration || 2000;
+
+  let phraseIdx = 0;
+  let charIdx = 0;
+  let isDeleting = false;
+
+  function tick() {
+    const current = phrases[phraseIdx];
+
+    if (!isDeleting) {
+      target.textContent = current.substring(0, charIdx + 1);
+      charIdx++;
+      if (charIdx >= current.length) {
+        setTimeout(() => { isDeleting = true; tick(); }, pauseDuration);
+        return;
+      }
+      setTimeout(tick, typeSpeed + Math.random() * 40);
+    } else {
+      target.textContent = current.substring(0, charIdx - 1);
+      charIdx--;
+      if (charIdx <= 0) {
+        isDeleting = false;
+        phraseIdx = (phraseIdx + 1) % phrases.length;
+        setTimeout(tick, 400);
+        return;
+      }
+      setTimeout(tick, deleteSpeed);
+    }
+  }
+
+  tick();
+}
+
+// --- Animated Counters ---
+
+function initAnimatedCounters() {
+  const counters = document.querySelectorAll('[data-count-target]');
+  if (!counters.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        if (el.dataset.counted) return;
+        el.dataset.counted = '1';
+
+        const target = parseInt(el.dataset.countTarget);
+        const suffix = el.dataset.countSuffix || '';
+        const duration = 1500;
+        const start = performance.now();
+
+        function update(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          // Ease out cubic
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = Math.round(eased * target);
+          el.textContent = current + suffix;
+          if (progress < 1) requestAnimationFrame(update);
+        }
+
+        requestAnimationFrame(update);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  counters.forEach(c => observer.observe(c));
+}
+
+// --- Skill Bar Animations ---
+
+function initSkillBarAnimations() {
+  const bars = document.querySelectorAll('.skill-bar-fill:not(.animated)');
+  if (!bars.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animated');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  bars.forEach(bar => observer.observe(bar));
+}
 
 // --- Scroll Reveal (storytelling scroll) ---
 
