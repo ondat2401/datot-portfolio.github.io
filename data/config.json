@@ -188,7 +188,9 @@
       "playStore": "https://play.google.com/store/apps/details?id=com.musicgame.magicdance",
       "appStore": "https://apps.apple.com/vn/app/magic-dance-star-rhythm-tiles/id6755515737",
       "playable": true,
-      "playableFiles": ["playables/gmtp.html"],
+      "playableFiles": [
+        "playables/gmtp.html"
+      ],
       "duration": {
         "from": "2025-03",
         "to": "Present"
@@ -233,7 +235,10 @@
           "playStore": "https://play.google.com/store/apps/details?id=com.amanotes.beathopper&hl=en",
           "appStore": "https://apps.apple.com/us/app/tiles-hop-music-ball-clash/id1344702806",
           "playable": true,
-          "playableFiles": ["playables/bh.html","playables/bh2.html"],
+          "playableFiles": [
+            "playables/bh.html",
+            "playables/bh2.html"
+          ],
           "duration": {
             "from": "2025-02",
             "to": "2025-05"
@@ -258,7 +263,9 @@
           "playStore": "https://play.google.com/store/apps/details?id=example",
           "appStore": "https://apps.apple.com/app/example/id123456",
           "playable": true,
-          "playableFiles": ["playables/dr.html"]
+          "playableFiles": [
+            "playables/dr.html"
+          ]
         },
         {
           "title": "Magic Tile 3: Piano Music Game",
@@ -278,7 +285,9 @@
           "playStore": "https://play.google.com/store/apps/details?id=com.youmusic.magictiles&hl=en",
           "appStore": "https://apps.apple.com/us/app/magic-tiles-3-piano-game/id1443446174",
           "playable": true,
-          "playableFiles": ["playables/pi.html"]
+          "playableFiles": [
+            "playables/pi.html"
+          ]
         },
         {
           "title": "Duet Cats: Cute Music Game",
@@ -298,7 +307,31 @@
           "playStore": "https://play.google.com/store/apps/details?id=com.amanotes.gs.g06&hl=en",
           "appStore": "https://apps.apple.com/vn/app/duet-cats-rhythm-meow-game/id1658687701",
           "playable": true,
-          "playableFiles": ["playables/gduc.html"]
+          "playableFiles": [
+            "playables/gduc.html"
+          ]
+        },
+        {
+          "title": "Idle Shop: Cozy Clicker",
+          "desc": "An idle shop-management mini game where you stock shelves, hire helpers, and watch revenue grow even while you’re not actively tapping.",
+          "image": "assets/media/projects/img/ais.jpg",
+          "detail": "A compact idle-management game built around running a tiny storefront that gradually scales into a bustling shop, balancing upgrades, automation, and satisfying number growth.<br><br> Role: Playable Developer<br> Implemented tap and drag interactions for stocking shelves and upgrading product slots, with clear visual states for locked, active, and maxed-out items. Built a time-based production and revenue system driven by scriptable config data, allowing each item line to define its own base income, production time, and upgrade curve. Added soft-prestige mechanics through global multipliers and manager boosts so short sessions still feel meaningfully rewarding.<br><br> Designed upgrade pacing using exponential and sub-exponential growth curves to keep early-game progress snappy while preventing late-game values from exploding uncontrollably. Integrated auto-collect helpers, progress bars, and floating gain text to make passive income feel tangible even when the player is mostly watching. Tuned particles, SFX hooks, and subtle punch/scale animations on key actions (buy, upgrade, collect) to keep the experience tactile and readable on mobile.<br><br> Created as a portfolio project to showcase idle-economy balancing, data-driven upgrade systems, and clear, satisfying management UI tailored for short playable-ad length sessions.",
+          "video": "assets/media/projects/mp4/ais.mp4",
+          "tech": [
+            "Unity",
+            "C#",
+            "Idle",
+            "Economy Design",
+            "DOTween",
+            "Luna",
+            "Particles"
+          ],
+          "playStore": "",
+          "appStore": "",
+          "playable": true,
+          "playableFiles": [
+            "playables/ais.html"
+          ]
         },
         {
           "title": "Decor Room: Animal Music Party",
@@ -318,7 +351,9 @@
           "playStore": "https://play.google.com/store/apps/details?id=com.ngd.capybaradream&hl=en",
           "appStore": "https://apps.apple.com/us/app/decor-room-animal-music-party/id6754315956",
           "playable": true,
-          "playableFiles": ["playables/ncdr.html"]
+          "playableFiles": [
+            "playables/ncdr.html"
+          ]
         },
         {
           "title": "Word Music Explored",
@@ -337,7 +372,9 @@
           "playStore": "https://play.google.com/store/apps/details?id=com.core.wordmusic&hl=en",
           "appStore": "https://apps.apple.com/us/app/word-puzzle-music/id6751626442",
           "playable": true,
-          "playableFiles": ["playables/wom.html"]
+          "playableFiles": [
+            "playables/wom.html"
+          ]
         },
         {
           "title": "Word Music Explored",
@@ -356,7 +393,9 @@
           "playStore": "https://play.google.com/store/apps/details?id=com.ngd.tapmusic&hl=en",
           "appStore": "https://apps.apple.com/us/app/tap-music-gallery/id6752386492?l=en",
           "playable": true,
-          "playableFiles": ["playables/nct.html"]
+          "playableFiles": [
+            "playables/nct.html"
+          ]
         }
       ]
     },
@@ -424,7 +463,9 @@
           "playStore": "",
           "appStore": "",
           "playable": true,
-          "playableFiles": ["https://ondat24.itch.io/neclor-frame"]
+          "playableFiles": [
+            "https://ondat24.itch.io/neclor-frame"
+          ]
         }
       ]
     }
