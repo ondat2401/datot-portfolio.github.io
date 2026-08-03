@@ -1,0 +1,13 @@
+{
+  "id": "dancing-road",
+  "title": "Dancing Road: Color Ball Run",
+  "desc": "A rhythm-based color-matching runner where you swipe to guide a ball along a music-driven track, hitting same-color balls to the beat.",
+  "detail": "A 3D rhythm-based color ball runner where you swipe to steer along a winding track, switching colors and colliding with same-color balls while dodging mismatched ones, all tightly synced to the music.<br><br> Role: Playable Developer<br> Implemented a beat-driven track system that controls obstacle layout, color-change segments, and collectible patterns based on BPM and predefined beatmaps. Designed the color-state logic so collisions, VFX, and score feedback all react instantly to the current ball color and hit accuracy. Tuned swipe controls with smoothing and assist zones for mobile, and optimized object pooling, material usage, and LOD to keep performance stable on a wide range of Android devices.<br><br> Built as a portfolio project to showcase rhythm-runner design, audio-synced level logic, and scalable color-matching mechanics for mobile.",
+  "image": "projects/dancing-road/thumbnail.jpg",
+  "video": "projects/dancing-road/preview.mp4",
+  "tech": ["Unity", "C#", "Rhythm", "3D Shader", "DOTween", "Luna", "Particles"],
+  "playStore": "https://play.google.com/store/apps/details?id=example",
+  "appStore": "https://apps.apple.com/app/example/id123456",
+  "playable": true,
+  "playableFiles": ["projects/dancing-road/playable.html"]
+}

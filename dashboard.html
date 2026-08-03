@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visitor Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0f0f1a; color: #e0e0e0; min-height: 100vh;
+    }
+    .login-screen {
+      display: flex; justify-content: center; align-items: center;
+      min-height: 100vh; flex-direction: column; gap: 16px;
+    }
+    .login-screen h2 { color: #00d4ff; font-size: 1.8rem; }
+    .login-box {
+      background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 12px;
+      padding: 32px; width: 360px; display: flex; flex-direction: column; gap: 14px;
+    }
+    .login-box input {
+      padding: 12px 16px; border: 1px solid #333; border-radius: 8px;
+      background: #0f0f1a; color: #fff; font-size: 1rem; width: 100%;
+    }
+    .login-box input:focus { outline: none; border-color: #00d4ff; }
+    .login-box button {
+      padding: 12px; background: #00d4ff; color: #000; border: none;
+      border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem;
+    }
+    .login-box button:hover { background: #00b8d9; }
+    .login-error { color: #ff4444; font-size: 0.85rem; text-align: center; display: none; }
+    .header {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      padding: 20px 30px; border-bottom: 1px solid #2a2a4a;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .header h1 { font-size: 1.5rem; color: #00d4ff; }
+    .header .actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .header .status { font-size: 0.85rem; color: #888; }
+    .dashboard { display: none; }
+    .dashboard.active { display: block; }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px; padding: 24px 30px;
+    }
+    .stat-card {
+      background: linear-gradient(135deg, #1a1a2e, #1e2a3a);
+      border: 1px solid #2a2a4a; border-radius: 12px; padding: 20px; text-align: center;
+    }
+    .stat-card .value { font-size: 2.5rem; font-weight: bold; color: #00d4ff; }
+    .stat-card .label { font-size: 0.85rem; color: #888; margin-top: 4px; }
+    .section { padding: 0 30px 24px; }
+    .section h2 {
+      font-size: 1.2rem; color: #00d4ff; margin-bottom: 16px;
+      padding-top: 16px; border-top: 1px solid #2a2a4a;
+    }
+    .charts-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;
+    }
+    .chart-card {
+      background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 12px; padding: 20px;
+    }
+    .chart-card h3 { font-size: 1rem; color: #ccc; margin-bottom: 12px; }
+    .bar-chart .bar-row { display: flex; align-items: center; margin-bottom: 8px; gap: 10px; }
+    .bar-chart .bar-label {
+      min-width: 100px; font-size: 0.85rem; text-align: right; color: #aaa;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .bar-chart .bar-track {
+      flex: 1; height: 22px; background: #2a2a3a; border-radius: 4px; overflow: hidden;
+    }
+    .bar-chart .bar-fill {
+      height: 100%; background: linear-gradient(90deg, #00d4ff, #0088cc);
+      border-radius: 4px; transition: width 0.6s ease;
+      display: flex; align-items: center; padding-left: 8px;
+      font-size: 0.75rem; color: #fff; font-weight: bold; min-width: fit-content;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      background: #1e2a3a; padding: 10px 12px; text-align: left;
+      color: #00d4ff; position: sticky; top: 0; z-index: 1;
+    }
+    td { padding: 8px 12px; border-bottom: 1px solid #1e1e2e; }
+    tr:hover td { background: #1a1a2e; }
+    .table-wrapper {
+      max-height: 500px; overflow-y: auto; border: 1px solid #2a2a4a; border-radius: 8px;
+    }
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 0.75rem; font-weight: bold;
+    }
+    .badge-desktop { background: #1e3a5f; color: #5bc0de; }
+    .badge-mobile { background: #3a1e5f; color: #d45bde; }
+    .badge-tablet { background: #1e5f3a; color: #5bde8a; }
+    .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+    .pagination button {
+      padding: 8px 16px; background: #1a1a2e; border: 1px solid #2a2a4a;
+      color: #ccc; border-radius: 6px; cursor: pointer;
+    }
+    .pagination button:hover { background: #2a2a4a; }
+    .pagination button:disabled { opacity: 0.4; cursor: default; }
+    .pagination span { padding: 8px; color: #888; }
+    .btn {
+      padding: 8px 16px; border: none; border-radius: 6px;
+      cursor: pointer; font-weight: bold; font-size: 0.85rem;
+    }
+    .btn-primary { background: #00d4ff; color: #000; }
+    .btn-primary:hover { background: #00b8d9; }
+    .btn-secondary {
+      background: #2a2a4a; color: #ccc; text-decoration: none;
+      display: inline-flex; align-items: center;
+    }
+    .btn-secondary:hover { background: #3a3a5a; }
+    .btn-danger { background: #ff4444; color: #fff; }
+    .btn-danger:hover { background: #cc3333; }
+    .mb-30 { margin-bottom: 30px; }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div class="login-screen" id="loginScreen">
+    <h2>📊 Visitor Dashboard</h2>
+    <div class="login-box">
+      <input type="text" id="inputUser" placeholder="Username" autocomplete="username" autofocus>
+      <input type="password" id="inputPass" placeholder="Password" autocomplete="current-password">
+      <button onclick="login()">Đăng nhập</button>
+      <p class="login-error" id="loginError">Sai tài khoản hoặc mật khẩu.</p>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="dashboard" id="dashboard">
+    <div class="header">
+      <h1>📊 Visitor Dashboard</h1>
+      <div class="actions">
+        <span class="status" id="lastUpdated"></span>
+        <a class="btn btn-secondary" href="https://ondat24.goatcounter.com" target="_blank">📈 GoatCounter</a>
+        <button class="btn btn-primary" onclick="loadAll()">🔄 Refresh</button>
+        <button class="btn btn-danger" onclick="logout()">Đăng xuất</button>
+      </div>
+    </div>
+    <div class="stats-grid" id="overviewStats"></div>
+    <div class="section">
+      <h2>📈 Phân tích</h2>
+      <div class="charts-grid">
+        <div class="chart-card"><h3>🌐 Trình duyệt</h3><div class="bar-chart" id="browserChart"></div></div>
+        <div class="chart-card"><h3>💻 Hệ điều hành</h3><div class="bar-chart" id="osChart"></div></div>
+        <div class="chart-card"><h3>🌍 Quốc gia</h3><div class="bar-chart" id="countryChart"></div></div>
+        <div class="chart-card"><h3>📱 Thiết bị</h3><div class="bar-chart" id="deviceChart"></div></div>
+      </div>
+    </div>
+    <div class="section mb-30">
+      <h2>👥 Người truy cập gần đây</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Thời gian</th><th>IP</th><th>Quốc gia</th>
+              <th>Thành phố</th><th>Trình duyệt</th><th>OS</th>
+              <th>Thiết bị</th><th>Màn hình</th><th>Ngôn ngữ</th><th>Referrer</th>
+            </tr>
+          </thead>
+          <tbody id="visitorsTable"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+
+<script>
+// ============ CẤU HÌNH ============
+const SUPA_URL = 'https://plxzjoukdpgzmjhxocpb.supabase.co';
+const SUPA_KEY = 'sb_publishable_IKpV7Y3y8Nr-DvbOY93NvA_VpZCO3RJ';
+// ===================================
+
+let currentPage = 0;
+const PAGE_SIZE = 50;
+
+// --- Helpers ---
+function supaHeaders() {
+  const h = { 'apikey': SUPA_KEY };
+  // Legacy JWT keys cần thêm Authorization
+  if (SUPA_KEY.startsWith('eyJ')) {
+    h['Authorization'] = `Bearer ${SUPA_KEY}`;
+  }
+  return h;
+}
+
+async function supaFetch(path) {
+  try {
+    const res = await fetch(SUPA_URL + path, { headers: supaHeaders() });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch { return null; }
+}
+
+async function supaCount(table, filter = '') {
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/${table}?select=*${filter}`, {
+      method: 'HEAD',
+      headers: { ...supaHeaders(), 'Prefer': 'count=exact' }
+    });
+    return parseInt(res.headers.get('content-range')?.split('/')[1]) || 0;
+  } catch { return 0; }
+}
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// --- Login: verify against admin_config table in Supabase ---
+async function login() {
+  const user = document.getElementById('inputUser').value.trim();
+  const pass = document.getElementById('inputPass').value;
+  const errEl = document.getElementById('loginError');
+  if (!user || !pass) return;
+
+  errEl.style.display = 'none';
+
+  // Lấy admin config từ Supabase
+  const admins = await supaFetch('/rest/v1/admin_config?select=username,password_hash');
+  if (!admins || !admins.length) {
+    errEl.textContent = 'Không kết nối được database. Kiểm tra Supabase config.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const passHash = await sha256(pass);
+  const match = admins.find(a => a.username === user && a.password_hash === passHash);
+
+  if (!match) {
+    errEl.textContent = 'Sai tài khoản hoặc mật khẩu.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  sessionStorage.setItem('_dash_auth', '1');
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('dashboard').classList.add('active');
+  loadAll();
+}
+
+function logout() {
+  sessionStorage.removeItem('_dash_auth');
+  document.getElementById('dashboard').classList.remove('active');
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('inputPass').value = '';
+}
+
+// Auto-login nếu session còn
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('_dash_auth')) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').classList.add('active');
+    loadAll();
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') login();
+});
+
+// --- Load All ---
+async function loadAll() {
+  document.getElementById('lastUpdated').textContent = 'Đang tải...';
+  await Promise.all([
+    loadOverview(),
+    loadChart('browserChart', 'browser'),
+    loadChart('osChart', 'os'),
+    loadChart('countryChart', 'country'),
+    loadChart('deviceChart', 'device_type'),
+    loadVisitors(0)
+  ]);
+  document.getElementById('lastUpdated').textContent =
+    'Cập nhật: ' + new Date().toLocaleString('vi-VN');
+}
+
+async function loadOverview() {
+  const total = await supaCount('visitors');
+  const today = new Date().toISOString().split('T')[0];
+  const todayData = await supaFetch(`/rest/v1/visitors?select=id&visited_at=gte.${today}T00:00:00`);
+  const ipData = await supaFetch('/rest/v1/visitors?select=ip');
+  const uniqueCount = ipData ? new Set(ipData.map(v => v.ip)).size : 0;
+  const pageViews = await supaCount('page_views');
+
+  document.getElementById('overviewStats').innerHTML = `
+    <div class="stat-card"><div class="value">${total}</div><div class="label">Tổng lượt truy cập</div></div>
+    <div class="stat-card"><div class="value">${uniqueCount}</div><div class="label">IP duy nhất</div></div>
+    <div class="stat-card"><div class="value">${todayData ? todayData.length : 0}</div><div class="label">Hôm nay</div></div>
+    <div class="stat-card"><div class="value">${pageViews}</div><div class="label">Page views</div></div>
+  `;
+}
+
+async function loadChart(containerId, field) {
+  const data = await supaFetch(`/rest/v1/visitors?select=${field}&${field}=not.is.null`);
+  const container = document.getElementById(containerId);
+  if (!data || !data.length) {
+    container.innerHTML = '<p style="color:#666;">Chưa có dữ liệu</p>';
+    return;
+  }
+  const counts = {};
+  data.forEach(r => { const v = r[field] || 'Unknown'; counts[v] = (counts[v] || 0) + 1; });
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const max = sorted[0][1];
+  container.innerHTML = sorted.map(([label, count]) => `
+    <div class="bar-row">
+      <span class="bar-label" title="${label}">${label}</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${max > 0 ? count / max * 100 : 0}%">${count}</div>
+      </div>
+    </div>`).join('');
+}
+
+async function loadVisitors(page) {
+  currentPage = page;
+  const offset = page * PAGE_SIZE;
+  const data = await supaFetch(`/rest/v1/visitors?select=*&order=visited_at.desc&limit=${PAGE_SIZE}&offset=${offset}`);
+  const total = await supaCount('visitors');
+  if (!data) return;
+
+  document.getElementById('visitorsTable').innerHTML = data.map((v, i) => {
+    const badge = v.device_type === 'mobile'
+      ? '<span class="badge badge-mobile">Mobile</span>'
+      : v.device_type === 'tablet'
+        ? '<span class="badge badge-tablet">Tablet</span>'
+        : '<span class="badge badge-desktop">Desktop</span>';
+    const time = v.visited_at ? new Date(v.visited_at).toLocaleString('vi-VN') : '-';
+    return `<tr>
+      <td>${offset + i + 1}</td><td>${time}</td><td>${v.ip || '-'}</td>
+      <td>${v.country || '-'}</td><td>${v.city || '-'}</td>
+      <td>${v.browser || '-'}</td><td>${v.os || '-'}</td><td>${badge}</td>
+      <td>${v.screen_width && v.screen_height ? v.screen_width + '×' + v.screen_height : '-'}</td>
+      <td>${v.language || '-'}</td>
+      <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+          title="${v.referrer || ''}">${v.referrer || '-'}</td>
+    </tr>`;
+  }).join('');
+
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  document.getElementById('pagination').innerHTML = `
+    <button ${page === 0 ? 'disabled' : ''} onclick="loadVisitors(${page - 1})">← Trước</button>
+    <span>Trang ${page + 1} / ${Math.max(totalPages, 1)}</span>
+    <button ${page >= totalPages - 1 ? 'disabled' : ''} onclick="loadVisitors(${page + 1})">Sau →</button>
+  `;
+}
+</script>
+</body>
+</html>

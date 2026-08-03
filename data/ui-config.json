@@ -1,0 +1,40 @@
+{
+  "loading": {
+    "icon": "",
+    "text": "Loading..."
+  },
+  "typing": {
+    "phrases": ["Game Developer", "Playable Ads Specialist", "Unity Engineer"],
+    "typeSpeed": 60,
+    "deleteSpeed": 30,
+    "pauseDuration": 2000,
+    "startDelay": 400
+  },
+  "cursor": {},
+  "modal": {
+    "badges": {
+      "duration": { "icon": "⏱" },
+      "role": { "icon": "🎮" }
+    },
+    "sections": {
+      "impacts": { "icon": "💡", "title": "Key Contributions" },
+      "hypotheses": { "icon": "🧪", "title": "Hypotheses Tested" },
+      "metrics": { "icon": "📊", "title": "Impact Metrics" }
+    },
+    "hypothesis": {
+      "adopted": "✓ Adopted",
+      "rejected": "✗ Rejected",
+      "resultLabel": "Result:"
+    },
+    "playableCta": {
+      "icon": "🎮",
+      "title": "Play in Browser",
+      "btnText": "Play Now",
+      "btnIcon": "bi-play-fill"
+    },
+    "storeButtons": {
+      "googlePlay": { "icon": "bi-google-play", "text": "Google Play" },
+      "appStore": { "icon": "bi-apple", "text": "App Store" }
+    }
+  }
+}

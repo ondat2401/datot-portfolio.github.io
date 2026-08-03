@@ -1,0 +1,13 @@
+{
+  "id": "neclor-frame",
+  "title": "Neclor Frame",
+  "desc": "",
+  "detail": "Full detailed description here.",
+  "image": "projects/neclor-frame/thumbnail.png",
+  "video": "projects/neclor-frame/preview.mp4",
+  "tech": ["Unity", "C#", "Puzzle", "Post Processing", "DOTween", "State Machine", "Aseprite"],
+  "playStore": "",
+  "appStore": "",
+  "playable": true,
+  "playableFiles": ["https://ondat24.itch.io/neclor-frame"]
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Ôn Thành Đạt — Portfolio",
+  "description": "Game Developer & Playable Ads Specialist",
+  "url": "",
+  "ogImage": "",
+  "favicon": "assets/media/favicon.svg",
+  "copyright": "2025 Ôn Thành Đạt. All rights reserved.",
+  "sectionTitles": {
+    "highlights": "✨ Highlights",
+    "about": "About Me",
+    "skills": "Skills",
+    "projects": "Projects",
+    "experience": "Experience",
+    "contact": "Contact"
+  }
+}

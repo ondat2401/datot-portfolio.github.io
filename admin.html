@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    body { background: #0f0f1a; color: #e0e0e0; min-height: 100vh; }
+    .login-wrap { display:flex;justify-content:center;align-items:center;min-height:100vh;flex-direction:column;gap:16px; }
+    .login-wrap h2 { color:#00d4ff; }
+    .login-box { background:#1a1a2e;border:1px solid #2a2a4a;border-radius:12px;padding:32px;width:360px; }
+    .login-box input { background:#0f0f1a;border-color:#333;color:#fff; }
+    .login-box input:focus { border-color:#00d4ff;box-shadow:none;background:#0f0f1a;color:#fff; }
+    .admin-wrap { display:none; }
+    .admin-wrap.active { display:block; }
+    .sidebar { position:fixed;top:0;left:0;width:220px;height:100vh;background:#1a1a2e;border-right:1px solid #2a2a4a;padding:20px 0;z-index:100;overflow-y:auto; }
+    .sidebar h4 { color:#00d4ff;padding:0 20px;margin-bottom:20px;font-size:1.1rem; }
+    .sidebar .nav-link { color:#aaa;padding:10px 20px;font-size:0.9rem; }
+    .sidebar .nav-link:hover,.sidebar .nav-link.active { color:#00d4ff;background:#0f0f1a; }
+    .sidebar .nav-link i { margin-right:8px; }
+    .main-content { margin-left:220px;padding:24px 30px; }
+    .form-control,.form-select { background:#0f0f1a;border-color:#333;color:#e0e0e0; }
+    .form-control:focus,.form-select:focus { background:#0f0f1a;border-color:#00d4ff;color:#e0e0e0;box-shadow:none; }
+    .form-label { color:#aaa;font-size:0.85rem; }
+    .btn-cyan { background:#00d4ff;color:#000;border:none; }
+    .btn-cyan:hover { background:#00b8d9;color:#000; }
+    .tab-section { display:none; }
+    .tab-section.active { display:block; }
+    .item-card { background:#12121f;border:1px solid #2a2a4a;border-radius:8px;padding:16px;margin-bottom:12px; }
+    .item-card h6 { color:#00d4ff;margin:0; }
+    .item-card .meta { color:#888;font-size:0.8rem; }
+    .sync-bar { background:#1a1a2e;border-bottom:1px solid #2a2a4a;padding:12px 30px;margin-left:220px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50; }
+    .modal-content { background:#1a1a2e;color:#e0e0e0;border:1px solid #2a2a4a; }
+    .modal-header,.modal-footer { border-color:#2a2a4a; }
+    .btn-close { filter:invert(1); }
+    .toast-container { position:fixed;bottom:20px;right:20px;z-index:9999; }
+    .card-dark { background:#1a1a2e;border:1px solid #2a2a4a;border-radius:8px; }
+    /* Fix Bootstrap overriding text colors */
+    .card-dark h5, .card-dark p, .card-dark li, .card-dark b { color: #e0e0e0; }
+    .card-dark .text-muted { color: #999 !important; }
+    .item-card .meta { color: #aaa; font-size: 0.8rem; }
+    .form-check-label { color: #ccc; }
+    .modal-title { color: #00d4ff; }
+    .modal-body { color: #e0e0e0; }
+    .modal-body label { color: #bbb; }
+    h4, h5, h6 { color: #e0e0e0; }
+    p { color: #ccc; }
+    .text-muted { color: #999 !important; }
+    .nav-link.text-danger { color: #ff6b6b !important; }
+    .nav-link.text-danger:hover { color: #ff4444 !important; }
+    select option { background: #0f0f1a; color: #e0e0e0; }
+    /* Save button states */
+    .btn-save { background:#2a2a4a;color:#666;border:none;transition:all 0.3s ease;pointer-events:none; }
+    .btn-save.dirty {
+      background:#00d4ff;color:#000;pointer-events:auto;
+      animation: save-pulse 2s ease-in-out infinite;
+      box-shadow: 0 0 12px rgba(0,212,255,0.5);
+    }
+    .btn-save.dirty:hover { background:#00b8d9; animation:none; }
+    @keyframes save-pulse {
+      0%,100% { box-shadow: 0 0 8px rgba(0,212,255,0.3); }
+      50% { box-shadow: 0 0 20px rgba(0,212,255,0.7); }
+    }
+    .dirty-dot {
+      display:none;width:8px;height:8px;border-radius:50%;background:#ff4444;
+      margin-left:6px;
+    }
+    .btn-save.dirty .dirty-dot { display:inline-block; }
+  </style>
+</head>
+<body>
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginScreen">
+  <h2>🛠️ Portfolio Admin</h2>
+  <div class="login-box">
+    <div class="mb-3"><input type="text" class="form-control" id="inputUser" placeholder="Username" autofocus></div>
+    <div class="mb-3"><input type="password" class="form-control" id="inputPass" placeholder="Password"></div>
+    <button class="btn btn-cyan w-100" onclick="login()">Đăng nhập</button>
+    <p class="text-danger text-center mt-2 small" id="loginError" style="display:none"></p>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-wrap" id="adminWrap">
+  <div class="sidebar">
+    <h4>🛠️ Admin</h4>
+    <nav class="nav flex-column">
+      <a class="nav-link active" href="#" data-tab="highlights"><i class="bi bi-star"></i>Highlights</a>
+      <a class="nav-link" href="#" data-tab="categories"><i class="bi bi-folder"></i>Categories</a>
+      <a class="nav-link" href="#" data-tab="projects"><i class="bi bi-controller"></i>Projects</a>
+      <a class="nav-link" href="#" data-tab="timeline"><i class="bi bi-clock-history"></i>Timeline</a>
+      <a class="nav-link" href="#" data-tab="sync"><i class="bi bi-arrow-repeat"></i>Sync / Export</a>
+      <hr style="border-color:#2a2a4a;margin:12px 20px;">
+      <a class="nav-link" href="dashboard.html"><i class="bi bi-bar-chart"></i>Visitor Stats</a>
+      <a class="nav-link text-danger" href="#" onclick="logout()"><i class="bi bi-box-arrow-left"></i>Đăng xuất</a>
+    </nav>
+  </div>
+  <div class="sync-bar">
+    <span id="syncStatus" style="color:#888;font-size:0.85rem;">Sẵn sàng</span>
+    <div class="d-flex gap-2 align-items-center">
+      <button class="btn btn-sm btn-save" id="btnSave" onclick="exportAllJSON()">
+        <i class="bi bi-save"></i> Save to JSON <span class="dirty-dot"></span>
+      </button>
+      <button class="btn btn-sm btn-outline-light" onclick="exportAllJSON()"><i class="bi bi-download"></i> Export</button>
+      <label class="btn btn-sm btn-outline-warning mb-0"><i class="bi bi-upload"></i> Import<input type="file" accept=".json" style="display:none" onchange="importJSON(event)"></label>
+    </div>
+  </div>
+  <div class="main-content">
+    <!-- HIGHLIGHTS -->
+    <div class="tab-section active" id="tab-highlights">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0" style="color:#00d4ff;">⭐ Highlights</h4>
+        <button class="btn btn-cyan btn-sm" onclick="openItemModal('highlight')"><i class="bi bi-plus"></i> Thêm</button>
+      </div>
+      <div id="highlightsList"></div>
+    </div>
+    <!-- CATEGORIES -->
+    <div class="tab-section" id="tab-categories">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0" style="color:#00d4ff;">📁 Categories</h4>
+        <button class="btn btn-cyan btn-sm" onclick="openCatModal()"><i class="bi bi-plus"></i> Thêm</button>
+      </div>
+      <div id="categoriesList"></div>
+    </div>
+    <!-- PROJECTS -->
+    <div class="tab-section" id="tab-projects">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0" style="color:#00d4ff;">🎮 Projects</h4>
+        <div class="d-flex gap-2">
+          <select class="form-select form-select-sm" id="projCatFilter" style="width:200px;" onchange="loadProjects()"><option value="">Tất cả</option></select>
+          <button class="btn btn-cyan btn-sm" onclick="openItemModal('project')"><i class="bi bi-plus"></i> Thêm</button>
+        </div>
+      </div>
+      <div id="projectsList"></div>
+    </div>
+    <!-- TIMELINE -->
+    <div class="tab-section" id="tab-timeline">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0" style="color:#00d4ff;">📅 Timeline</h4>
+        <button class="btn btn-cyan btn-sm" onclick="openTlModal()"><i class="bi bi-plus"></i> Thêm</button>
+      </div>
+      <div id="timelineList"></div>
+    </div>
+    <!-- SYNC -->
+    <div class="tab-section" id="tab-sync">
+      <h4 class="mb-3" style="color:#00d4ff;">🔄 Sync / Export</h4>
+      <div class="card-dark p-4 mb-4">
+        <h5>Export → JSON</h5>
+        <p class="text-muted small">Download data từ Supabase thành file JSON. Commit vào repo để portfolio hiển thị.</p>
+        <button class="btn btn-cyan" onclick="exportAllJSON()"><i class="bi bi-download"></i> Export projects.json</button>
+        <button class="btn btn-outline-light ms-2" onclick="exportProfileJSON()"><i class="bi bi-download"></i> Export profile.json (timeline)</button>
+      </div>
+      <div class="card-dark p-4 mb-4">
+        <h5>Import ← JSON</h5>
+        <p class="text-muted small">Upload file JSON lên Supabase khi bạn sửa code trực tiếp.</p>
+        <label class="btn btn-outline-warning"><i class="bi bi-upload"></i> Import projects.json<input type="file" accept=".json" style="display:none" onchange="importJSON(event)"></label>
+        <label class="btn btn-outline-warning ms-2"><i class="bi bi-upload"></i> Import profile.json<input type="file" accept=".json" style="display:none" onchange="importProfileJSON(event)"></label>
+      </div>
+      <div class="card-dark p-4">
+        <h5>Cách sync</h5>
+        <ul class="text-muted small mb-0">
+          <li><b>Admin page</b> → Supabase → Export JSON → commit repo</li>
+          <li><b>Sửa code</b> → Import JSON lên admin → Supabase cập nhật</li>
+          <li>Portfolio luôn đọc file JSON tĩnh (nhanh, không phụ thuộc DB)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ITEM MODAL (shared for highlight + project) -->
+<div class="modal fade" id="itemModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="itemModalTitle"></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body" id="itemModalBody"></div>
+  <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button><button class="btn btn-cyan" id="itemModalSave">Lưu</button></div>
+</div></div></div>
+
+<!-- CATEGORY MODAL -->
+<div class="modal fade" id="catModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="catModalTitle"></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body" id="catModalBody"></div>
+  <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button><button class="btn btn-cyan" id="catModalSave">Lưu</button></div>
+</div></div></div>
+
+<!-- TIMELINE MODAL -->
+<div class="modal fade" id="tlModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="tlModalTitle"></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body" id="tlModalBody"></div>
+  <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button><button class="btn btn-cyan" id="tlModalSave">Lưu</button></div>
+</div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const SUPA_URL='https://plxzjoukdpgzmjhxocpb.supabase.co';
+const SUPA_KEY='sb_publishable_IKpV7Y3y8Nr-DvbOY93NvA_VpZCO3RJ';
+
+// ========== DIRTY STATE ==========
+let isDirty=false;
+function markDirty(){
+  isDirty=true;
+  const btn=document.getElementById('btnSave');
+  if(btn)btn.classList.add('dirty');
+  setStatus('⚠️ Có thay đổi chưa export');
+}
+function markClean(){
+  isDirty=false;
+  const btn=document.getElementById('btnSave');
+  if(btn)btn.classList.remove('dirty');
+}
+// Warn before leaving with unsaved changes
+window.addEventListener('beforeunload',e=>{
+  if(isDirty){e.preventDefault();e.returnValue='';}
+});
+
+// ========== SUPABASE HELPERS ==========
+function supaH(){const h={'apikey':SUPA_KEY,'Content-Type':'application/json'};if(SUPA_KEY.startsWith('eyJ'))h['Authorization']='Bearer '+SUPA_KEY;return h;}
+async function sGet(p){try{const r=await fetch(SUPA_URL+p,{headers:supaH()});if(!r.ok){console.error('sGet FAIL',p,r.status,await r.text());return null;}return r.json();}catch(e){console.error('sGet ERR',p,e);return null;}}
+async function sPost(p,d){const r=await fetch(SUPA_URL+p,{method:'POST',headers:{...supaH(),'Prefer':'return=representation'},body:JSON.stringify(d)});if(!r.ok){console.error('sPost FAIL',p,r.status,await r.text());return null;}return r.json();}
+async function sPatch(p,d){const r=await fetch(SUPA_URL+p,{method:'PATCH',headers:{...supaH(),'Prefer':'return=representation'},body:JSON.stringify(d)});return r.ok?r.json():null;}
+async function sDel(p){const r=await fetch(SUPA_URL+p,{method:'DELETE',headers:supaH()});if(!r.ok)console.error('sDel FAIL',p,r.status);return r.ok;}
+
+// ========== TOAST ==========
+function toast(msg,type='success'){
+  const c=document.getElementById('toastContainer');
+  const t=document.createElement('div');
+  t.className=`toast show text-bg-${type}`;t.setAttribute('role','alert');
+  t.innerHTML=`<div class="toast-body">${msg}</div>`;
+  c.appendChild(t);setTimeout(()=>t.remove(),3000);
+}
+function setStatus(s){document.getElementById('syncStatus').textContent=s;}
+
+// ========== AUTH ==========
+// Local auth fallback (no DB needed)
+const LOCAL_ADMINS=[{username:'admin',password_hash:'8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'}];
+async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}
+async function login(){
+  const u=document.getElementById('inputUser').value.trim(),p=document.getElementById('inputPass').value,e=document.getElementById('loginError');
+  if(!u||!p)return;e.style.display='none';
+  // Try DB first, fallback to local
+  let admins=await sGet('/rest/v1/admin_config?select=username,password_hash');
+  if(!admins||!admins.length) admins=LOCAL_ADMINS;
+  const h=await sha256(p);
+  if(!admins.find(a=>a.username===u&&a.password_hash===h)){e.textContent='Sai tài khoản hoặc mật khẩu.';e.style.display='block';return;}
+  sessionStorage.setItem('_adm','1');show();
+}
+function logout(){sessionStorage.removeItem('_adm');location.reload();}
+function show(){document.getElementById('loginScreen').style.display='none';document.getElementById('adminWrap').classList.add('active');loadAll();}
+window.addEventListener('DOMContentLoaded',()=>{if(sessionStorage.getItem('_adm'))show();});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('loginScreen').style.display!=='none')login();});
+
+// ========== TABS ==========
+document.querySelectorAll('.sidebar .nav-link[data-tab]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    document.querySelectorAll('.sidebar .nav-link').forEach(n=>n.classList.remove('active'));
+    a.classList.add('active');
+    document.querySelectorAll('.tab-section').forEach(s=>s.classList.remove('active'));
+    document.getElementById('tab-'+a.dataset.tab)?.classList.add('active');
+  });
+});
+
+// ========== LOAD ALL (with auto-seed) ==========
+let cats=[];
+async function loadAll(){
+  // Check if Supabase has data, if not → auto-seed from JSON files
+  const hl=await sGet('/rest/v1/highlights?select=id&limit=1');
+  const tl=await sGet('/rest/v1/timeline?select=id&limit=1');
+  
+  if(hl!==null && hl.length===0){
+    setStatus('Lần đầu — đang seed projects.json...');
+    await seedFromProjectsJSON();
+  }
+  if(tl!==null && tl.length===0){
+    setStatus('Đang seed timeline từ profile.json...');
+    await seedFromProfileJSON();
+  }
+  
+  setStatus('Đang tải...');
+  await Promise.all([loadHighlights(),loadCategories(),loadProjects(),loadTimeline()]);
+  setStatus('Sẵn sàng');
+}
+
+// Auto-seed: fetch JSON files từ repo và import vào Supabase
+async function seedFromProjectsJSON(){
+  try{
+    const res=await fetch('data/projects.json');
+    if(!res.ok)return;
+    const data=await res.json();
+    await doImportProjects(data);
+    toast('Đã tự động import projects.json');
+  }catch(e){console.error('Seed projects failed',e);}
+}
+
+async function seedFromProfileJSON(){
+  try{
+    const res=await fetch('data/profile.json');
+    if(!res.ok)return;
+    const data=await res.json();
+    if(data.timeline&&data.timeline.length){
+      await doImportTimeline(data.timeline);
+      toast('Đã tự động import timeline từ profile.json');
+    }
+  }catch(e){console.error('Seed profile failed',e);}
+}
+
+// Shared import logic (dùng cho cả auto-seed và manual import)
+async function doImportProjects(data){
+  if(data.highlights){
+    for(let i=0;i<data.highlights.length;i++){
+      const h=data.highlights[i];
+      await sPost('/rest/v1/highlights',{
+        sort_order:i,title:h.title,desc:h.desc,detail:h.detail,image:h.image,video:h.video,
+        tech:h.tech||[],play_store:h.playStore||'',app_store:h.appStore||'',
+        playable:!!h.playable,playable_files:h.playableFiles||[],
+        duration_from:h.duration?.from||'',duration_to:h.duration?.to||'',
+        role:h.role||'',impacts:h.impacts||[],hypotheses:h.hypotheses||[],metrics:h.metrics||[]
+      });
+    }
+  }
+  if(data.projectCategories){
+    for(let ci=0;ci<data.projectCategories.length;ci++){
+      const cat=data.projectCategories[ci];
+      await sPost('/rest/v1/project_categories',{id:cat.id,label:cat.label,sort_order:ci});
+      if(cat.projects){
+        for(let pi=0;pi<cat.projects.length;pi++){
+          const p=cat.projects[pi];
+          await sPost('/rest/v1/projects',{
+            category_id:cat.id,sort_order:pi,title:p.title,desc:p.desc||'',detail:p.detail||'',
+            image:p.image||'',video:p.video||'',tech:p.tech||[],
+            play_store:p.playStore||'',app_store:p.appStore||'',
+            playable:!!p.playable,playable_files:p.playableFiles||[],
+            duration_from:p.duration?.from||'',duration_to:p.duration?.to||'',
+            role:p.role||'',impacts:p.impacts||[],hypotheses:p.hypotheses||[],metrics:p.metrics||[]
+          });
+        }
+      }
+    }
+  }
+}
+
+async function doImportTimeline(tl){
+  for(let i=0;i<tl.length;i++){
+    await sPost('/rest/v1/timeline',{
+      sort_order:i,period:tl[i].period,role:tl[i].role,
+      company:tl[i].company||'',desc:tl[i].desc||''
+    });
+  }
+}
+
+// ========== HIGHLIGHTS ==========
+async function loadHighlights(){
+  const d=await sGet('/rest/v1/highlights?select=*&order=sort_order');
+  const c=document.getElementById('highlightsList');
+  if(d===null){c.innerHTML='<p style="color:#ff6b6b;">❌ Không đọc được data. Kiểm tra: 1) Đã chạy SQL chưa? 2) Đã expose bảng trong Data API chưa? Mở Console (F12) xem lỗi.</p>';return;}
+  if(!d.length){c.innerHTML='<p style="color:#aaa;">Chưa có highlight. Nhấn Import hoặc Thêm.</p>';return;}
+  c.innerHTML=d.map(h=>`<div class="item-card d-flex justify-content-between align-items-start">
+    <div><h6>${h.title}</h6><div class="meta">${h.role||''} · ${h.duration_from||''} → ${h.duration_to||''}</div>
+    <div class="meta mt-1">${(h.tech||[]).join(', ')}</div></div>
+    <div class="d-flex gap-1">
+      <button class="btn btn-sm btn-outline-light" onclick="openItemModal('highlight',${h.id})"><i class="bi bi-pencil"></i></button>
+      <button class="btn btn-sm btn-outline-danger" onclick="deleteItem('highlights',${h.id})"><i class="bi bi-trash"></i></button>
+    </div></div>`).join('');
+}
+
+// ========== CATEGORIES ==========
+async function loadCategories(){
+  cats=await sGet('/rest/v1/project_categories?select=*&order=sort_order')||[];
+  const c=document.getElementById('categoriesList');
+  const f=document.getElementById('projCatFilter');
+  f.innerHTML='<option value="">Tất cả</option>'+cats.map(c=>`<option value="${c.id}">${c.label}</option>`).join('');
+  if(!cats.length){c.innerHTML='<p style="color:#aaa;">Chưa có category.</p>';return;}
+  c.innerHTML=cats.map(cat=>`<div class="item-card d-flex justify-content-between align-items-center">
+    <div><h6>${cat.label}</h6><div class="meta">ID: ${cat.id} · Order: ${cat.sort_order}</div></div>
+    <div class="d-flex gap-1">
+      <button class="btn btn-sm btn-outline-light" onclick="openCatModal('${cat.id}')"><i class="bi bi-pencil"></i></button>
+      <button class="btn btn-sm btn-outline-danger" onclick="deleteCat('${cat.id}')"><i class="bi bi-trash"></i></button>
+    </div></div>`).join('');
+}
+
+// ========== PROJECTS ==========
+async function loadProjects(){
+  const filter=document.getElementById('projCatFilter').value;
+  let url='/rest/v1/projects?select=*&order=sort_order';
+  if(filter)url+=`&category_id=eq.${filter}`;
+  const d=await sGet(url)||[];
+  const c=document.getElementById('projectsList');
+  if(!d.length){c.innerHTML='<p style="color:#aaa;">Chưa có project.</p>';return;}
+  c.innerHTML=d.map(p=>`<div class="item-card d-flex justify-content-between align-items-start">
+    <div><h6>${p.title}</h6><div class="meta">${p.category_id||'?'} · ${p.role||''} · ${(p.tech||[]).slice(0,4).join(', ')}</div></div>
+    <div class="d-flex gap-1">
+      <button class="btn btn-sm btn-outline-light" onclick="openItemModal('project',${p.id})"><i class="bi bi-pencil"></i></button>
+      <button class="btn btn-sm btn-outline-danger" onclick="deleteItem('projects',${p.id})"><i class="bi bi-trash"></i></button>
+    </div></div>`).join('');
+}
+
+// ========== TIMELINE ==========
+async function loadTimeline(){
+  const d=await sGet('/rest/v1/timeline?select=*&order=sort_order')||[];
+  const c=document.getElementById('timelineList');
+  if(!d.length){c.innerHTML='<p style="color:#aaa;">Chưa có timeline.</p>';return;}
+  c.innerHTML=d.map(t=>`<div class="item-card d-flex justify-content-between align-items-start">
+    <div><h6>${t.role} @ ${t.company||''}</h6><div class="meta">${t.period}</div><div class="meta">${t.desc||''}</div></div>
+    <div class="d-flex gap-1">
+      <button class="btn btn-sm btn-outline-light" onclick="openTlModal(${t.id})"><i class="bi bi-pencil"></i></button>
+      <button class="btn btn-sm btn-outline-danger" onclick="deleteItem('timeline',${t.id})"><i class="bi bi-trash"></i></button>
+    </div></div>`).join('');
+}
+
+// ========== DELETE ==========
+async function deleteItem(table,id){
+  if(!confirm('Xóa item này?'))return;
+  await sDel(`/rest/v1/${table}?id=eq.${id}`);
+  toast('Đã xóa');markDirty();loadAll();
+}
+async function deleteCat(id){
+  if(!confirm('Xóa category này? Tất cả project trong đó cũng bị xóa.'))return;
+  await sDel(`/rest/v1/project_categories?id=eq.${id}`);
+  toast('Đã xóa category');markDirty();loadAll();
+}
+
+// ========== ITEM MODAL (highlight / project) ==========
+let editingType='',editingId=null;
+function projectFormHTML(data,type){
+  const d=data||{};
+  const catOpts=type==='project'?`<div class="mb-3"><label class="form-label">Category</label>
+    <select class="form-select" id="f_category">${cats.map(c=>`<option value="${c.id}" ${d.category_id===c.id?'selected':''}>${c.label}</option>`).join('')}</select></div>`:'';
+  return `${catOpts}
+  <div class="row"><div class="col-md-8 mb-3"><label class="form-label">Title *</label><input class="form-control" id="f_title" value="${d.title||''}"></div>
+  <div class="col-md-4 mb-3"><label class="form-label">Sort Order</label><input type="number" class="form-control" id="f_sort" value="${d.sort_order||0}"></div></div>
+  <div class="mb-3"><label class="form-label">Short Description</label><input class="form-control" id="f_desc" value="${d.desc||''}"></div>
+  <div class="mb-3"><label class="form-label">Detail (HTML)</label><textarea class="form-control" id="f_detail" rows="4">${d.detail||''}</textarea></div>
+  <div class="row"><div class="col-md-6 mb-3"><label class="form-label">Image URL</label><input class="form-control" id="f_image" value="${d.image||''}"></div>
+  <div class="col-md-6 mb-3"><label class="form-label">Video URL</label><input class="form-control" id="f_video" value="${d.video||''}"></div></div>
+  <div class="mb-3"><label class="form-label">Tech (comma separated)</label><input class="form-control" id="f_tech" value="${(d.tech||[]).join(', ')}"></div>
+  <div class="row"><div class="col-md-6 mb-3"><label class="form-label">Play Store URL</label><input class="form-control" id="f_ps" value="${d.play_store||''}"></div>
+  <div class="col-md-6 mb-3"><label class="form-label">App Store URL</label><input class="form-control" id="f_as" value="${d.app_store||''}"></div></div>
+  <div class="row"><div class="col-md-4 mb-3"><label class="form-label">Role</label><input class="form-control" id="f_role" value="${d.role||''}"></div>
+  <div class="col-md-4 mb-3"><label class="form-label">Duration From</label><input class="form-control" id="f_dfrom" value="${d.duration_from||''}" placeholder="2025-01"></div>
+  <div class="col-md-4 mb-3"><label class="form-label">Duration To</label><input class="form-control" id="f_dto" value="${d.duration_to||''}" placeholder="Present"></div></div>
+  <div class="mb-3"><label class="form-label">Playable Files (comma separated)</label><input class="form-control" id="f_pf" value="${(d.playable_files||[]).join(', ')}"></div>
+  <div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="f_playable" ${d.playable?'checked':''}><label class="form-check-label" for="f_playable">Playable</label></div>
+  <div class="mb-3"><label class="form-label">Impacts (JSON array)</label><textarea class="form-control" id="f_impacts" rows="3">${JSON.stringify(d.impacts||[],null,2)}</textarea></div>
+  <div class="mb-3"><label class="form-label">Hypotheses (JSON array)</label><textarea class="form-control" id="f_hypo" rows="3">${JSON.stringify(d.hypotheses||[],null,2)}</textarea></div>
+  <div class="mb-3"><label class="form-label">Metrics (JSON array)</label><textarea class="form-control" id="f_metrics" rows="3">${JSON.stringify(d.metrics||[],null,2)}</textarea></div>`;
+}
+
+async function openItemModal(type,id){
+  editingType=type;editingId=id||null;
+  const modal=new bootstrap.Modal(document.getElementById('itemModal'));
+  document.getElementById('itemModalTitle').textContent=id?`Sửa ${type}`:`Thêm ${type}`;
+  let data=null;
+  if(id){
+    const table=type==='highlight'?'highlights':'projects';
+    const arr=await sGet(`/rest/v1/${table}?id=eq.${id}`);
+    data=arr?.[0];
+  }
+  document.getElementById('itemModalBody').innerHTML=projectFormHTML(data,type);
+  document.getElementById('itemModalSave').onclick=saveItem;
+  modal.show();
+}
+
+function collectItemData(){
+  const techStr=document.getElementById('f_tech').value;
+  const pfStr=document.getElementById('f_pf').value;
+  let impacts=[],hypo=[],metrics=[];
+  try{impacts=JSON.parse(document.getElementById('f_impacts').value||'[]');}catch{}
+  try{hypo=JSON.parse(document.getElementById('f_hypo').value||'[]');}catch{}
+  try{metrics=JSON.parse(document.getElementById('f_metrics').value||'[]');}catch{}
+  return {
+    title:document.getElementById('f_title').value.trim(),
+    desc:document.getElementById('f_desc').value,
+    detail:document.getElementById('f_detail').value,
+    image:document.getElementById('f_image').value,
+    video:document.getElementById('f_video').value,
+    tech:techStr?techStr.split(',').map(s=>s.trim()).filter(Boolean):[],
+    play_store:document.getElementById('f_ps').value,
+    app_store:document.getElementById('f_as').value,
+    role:document.getElementById('f_role').value,
+    duration_from:document.getElementById('f_dfrom').value,
+    duration_to:document.getElementById('f_dto').value,
+    playable:document.getElementById('f_playable').checked,
+    playable_files:pfStr?pfStr.split(',').map(s=>s.trim()).filter(Boolean):[],
+    sort_order:parseInt(document.getElementById('f_sort').value)||0,
+    impacts,hypotheses:hypo,metrics
+  };
+}
+
+async function saveItem(){
+  const d=collectItemData();
+  if(!d.title){toast('Title là bắt buộc','danger');return;}
+  const table=editingType==='highlight'?'highlights':'projects';
+  if(editingType==='project'){
+    const catEl=document.getElementById('f_category');
+    if(catEl)d.category_id=catEl.value;
+  }
+  setStatus('Đang lưu...');
+  let ok;
+  if(editingId){ok=await sPatch(`/rest/v1/${table}?id=eq.${editingId}`,d);}
+  else{ok=await sPost(`/rest/v1/${table}`,d);}
+  if(ok){toast('Đã lưu!');bootstrap.Modal.getInstance(document.getElementById('itemModal')).hide();markDirty();loadAll();}
+  else toast('Lỗi khi lưu','danger');
+  setStatus(isDirty?'⚠️ Có thay đổi chưa export':'Sẵn sàng');
+}
+
+// ========== CATEGORY MODAL ==========
+let editingCatId=null;
+async function openCatModal(id){
+  editingCatId=id||null;
+  const modal=new bootstrap.Modal(document.getElementById('catModal'));
+  document.getElementById('catModalTitle').textContent=id?'Sửa Category':'Thêm Category';
+  let d={};
+  if(id){const arr=await sGet(`/rest/v1/project_categories?id=eq.${id}`);d=arr?.[0]||{};}
+  document.getElementById('catModalBody').innerHTML=`
+    <div class="mb-3"><label class="form-label">ID (unique, vd: Playable)</label><input class="form-control" id="fc_id" value="${d.id||''}" ${id?'disabled':''}></div>
+    <div class="mb-3"><label class="form-label">Label</label><input class="form-control" id="fc_label" value="${d.label||''}"></div>
+    <div class="mb-3"><label class="form-label">Sort Order</label><input type="number" class="form-control" id="fc_sort" value="${d.sort_order||0}"></div>`;
+  document.getElementById('catModalSave').onclick=saveCat;
+  modal.show();
+}
+async function saveCat(){
+  const id=document.getElementById('fc_id').value.trim(),label=document.getElementById('fc_label').value.trim(),sort=parseInt(document.getElementById('fc_sort').value)||0;
+  if(!id||!label){toast('ID và Label bắt buộc','danger');return;}
+  let ok;
+  if(editingCatId){ok=await sPatch(`/rest/v1/project_categories?id=eq.${editingCatId}`,{label,sort_order:sort});}
+  else{ok=await sPost('/rest/v1/project_categories',{id,label,sort_order:sort});}
+  if(ok){toast('Đã lưu!');bootstrap.Modal.getInstance(document.getElementById('catModal')).hide();markDirty();loadAll();}
+  else toast('Lỗi','danger');
+}
+
+// ========== TIMELINE MODAL ==========
+let editingTlId=null;
+async function openTlModal(id){
+  editingTlId=id||null;
+  const modal=new bootstrap.Modal(document.getElementById('tlModal'));
+  document.getElementById('tlModalTitle').textContent=id?'Sửa Timeline':'Thêm Timeline';
+  let d={};
+  if(id){const arr=await sGet(`/rest/v1/timeline?id=eq.${id}`);d=arr?.[0]||{};}
+  document.getElementById('tlModalBody').innerHTML=`
+    <div class="mb-3"><label class="form-label">Period (vd: 2025 - Present)</label><input class="form-control" id="ft_period" value="${d.period||''}"></div>
+    <div class="mb-3"><label class="form-label">Role</label><input class="form-control" id="ft_role" value="${d.role||''}"></div>
+    <div class="mb-3"><label class="form-label">Company</label><input class="form-control" id="ft_company" value="${d.company||''}"></div>
+    <div class="mb-3"><label class="form-label">Description</label><textarea class="form-control" id="ft_desc" rows="3">${d.desc||''}</textarea></div>
+    <div class="mb-3"><label class="form-label">Sort Order</label><input type="number" class="form-control" id="ft_sort" value="${d.sort_order||0}"></div>`;
+  document.getElementById('tlModalSave').onclick=saveTl;
+  modal.show();
+}
+async function saveTl(){
+  const d={period:document.getElementById('ft_period').value,role:document.getElementById('ft_role').value,company:document.getElementById('ft_company').value,desc:document.getElementById('ft_desc').value,sort_order:parseInt(document.getElementById('ft_sort').value)||0};
+  if(!d.period||!d.role){toast('Period và Role bắt buộc','danger');return;}
+  let ok;
+  if(editingTlId){ok=await sPatch(`/rest/v1/timeline?id=eq.${editingTlId}`,d);}
+  else{ok=await sPost('/rest/v1/timeline',d);}
+  if(ok){toast('Đã lưu!');bootstrap.Modal.getInstance(document.getElementById('tlModal')).hide();markDirty();loadTimeline();}
+  else toast('Lỗi','danger');
+}
+
+// ========== EXPORT JSON ==========
+async function exportAllJSON(){
+  setStatus('Đang export...');
+  const hl=await sGet('/rest/v1/highlights?select=*&order=sort_order')||[];
+  const catList=await sGet('/rest/v1/project_categories?select=*&order=sort_order')||[];
+  const projs=await sGet('/rest/v1/projects?select=*&order=sort_order')||[];
+
+  const highlights=hl.map(h=>({
+    title:h.title,desc:h.desc,detail:h.detail,image:h.image,video:h.video,
+    tech:h.tech||[],playStore:h.play_store,appStore:h.app_store,
+    playable:h.playable,playableFiles:h.playable_files||[],
+    duration:h.duration_from?{from:h.duration_from,to:h.duration_to}:undefined,
+    role:h.role,impacts:h.impacts||[],hypotheses:h.hypotheses||[],metrics:h.metrics||[]
+  }));
+
+  const projectCategories=catList.map(c=>({
+    id:c.id,label:c.label,
+    projects:projs.filter(p=>p.category_id===c.id).map(p=>({
+      title:p.title,desc:p.desc,detail:p.detail,image:p.image,video:p.video,
+      tech:p.tech||[],playStore:p.play_store,appStore:p.app_store,
+      playable:p.playable,playableFiles:p.playable_files||[],
+      duration:p.duration_from?{from:p.duration_from,to:p.duration_to}:undefined,
+      role:p.role,impacts:p.impacts||[],hypotheses:p.hypotheses||[],metrics:p.metrics||[]
+    }))
+  }));
+
+  download('projects.json',JSON.stringify({highlights,projectCategories},null,2));
+  markClean();setStatus('Đã export projects.json ✓');toast('Đã export projects.json');
+}
+
+async function exportProfileJSON(){
+  const tl=await sGet('/rest/v1/timeline?select=*&order=sort_order')||[];
+  const timeline=tl.map(t=>({period:t.period,role:t.role,company:t.company,desc:t.desc}));
+  // Chỉ export phần timeline, user merge vào profile.json
+  download('timeline.json',JSON.stringify({timeline},null,2));
+  toast('Đã export timeline.json — merge vào profile.json');
+}
+
+function download(name,content){
+  const a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(content);
+  a.download=name;a.click();
+}
+
+// ========== IMPORT JSON ==========
+async function importJSON(e){
+  const file=e.target.files[0];if(!file)return;
+  setStatus('Đang import...');
+  const text=await file.text();
+  let data;try{data=JSON.parse(text);}catch{toast('File JSON không hợp lệ','danger');return;}
+
+  // Clear existing
+  await sDel('/rest/v1/projects?id=not.is.null');
+  await sDel('/rest/v1/project_categories?id=not.is.null');
+  await sDel('/rest/v1/highlights?id=not.is.null');
+
+  await doImportProjects(data);
+
+  toast('Import thành công!');setStatus('Đã import');loadAll();
+  e.target.value='';
+}
+
+async function importProfileJSON(e){
+  const file=e.target.files[0];if(!file)return;
+  const text=await file.text();
+  let data;try{data=JSON.parse(text);}catch{toast('File không hợp lệ','danger');return;}
+  const tl=data.timeline;if(!tl||!tl.length){toast('Không tìm thấy timeline data','danger');return;}
+  await sDel('/rest/v1/timeline?id=not.is.null');
+  await doImportTimeline(tl);
+  toast('Import timeline thành công!');loadTimeline();
+  e.target.value='';
+}
+</script>
+</body>
+</html>
