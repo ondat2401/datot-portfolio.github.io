@@ -1711,16 +1711,6 @@ html.light-theme .modal .btn-outline-warning:hover {
   pointer-events: none;
 }
 
-.loading-pixel-art {
-  animation: loading-bounce 0.8s ease-in-out infinite alternate;
-  margin-bottom: 24px;
-  background: transparent;
-}
-
-@keyframes loading-bounce {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-12px); }
-}
 
 .loading-bar-container {
   width: 220px;

@@ -55,10 +55,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     modalConfig = uiConfig.modal || {};
   } catch (e) { /* fallback to defaults */ }
 
-  // --- Apply loading screen icon & text from config ---
-  const loadingIcon = document.getElementById('loadingIcon');
+  // --- Apply loading screen text from config ---
   const loadingTextEl = document.getElementById('loadingText');
-  if (loadingIcon && uiConfig.loading?.icon) loadingIcon.src = uiConfig.loading.icon;
   if (loadingTextEl && uiConfig.loading?.text) loadingTextEl.textContent = uiConfig.loading.text;
 
   // --- Loading Screen ---
