@@ -17,12 +17,31 @@
   --color-bg-card: #111128;
   --color-bg-section: #0d0d24;
   --color-text: #e0e0e0;
-  --color-text-muted: #8888aa;
+  /* Lifted from #8888aa for better contrast on dark card/section backgrounds */
+  --color-text-muted: #a8a8cc;
   --font-pixel: 'Press Start 2P', monospace;
   --font-body: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   --transition-speed: 0.3s;
   --glow-primary: 0 0 10px #ffcc00, 0 0 20px #ffcc0066;
   --glow-cyan: 0 0 10px #00e5ff, 0 0 20px #00e5ff66;
+
+  /* Tinted "black" — pure #000 replaced with a brand-hued near-black */
+  --color-ink: #05050f;
+
+  /* --- Pixel-font type scale (constrained, readable) ---
+     Press Start 2P has no lowercase descenders room, so keep a sane floor.
+     Steps are intentionally limited to build a real hierarchy. */
+  --fs-pixel-2xs: 0.5rem;   /* smallest labels / micro badges (was 0.35-0.45) */
+  --fs-pixel-xs:  0.6rem;   /* labels, tags, nav links (was 0.5-0.55) */
+  --fs-pixel-sm:  0.7rem;   /* small headings, buttons (was 0.6-0.65) */
+  --fs-pixel-md:  0.85rem;  /* section titles / card titles (was 0.7-0.75) */
+  --fs-pixel-lg:  1.1rem;   /* large section titles */
+  --fs-pixel-xl:  1.8rem;   /* hero headline */
+
+  /* --- Body-font type scale --- */
+  --fs-body-sm: 0.85rem;    /* muted supporting text (was 0.8-0.85) */
+  --fs-body-md: 0.9rem;     /* descriptions */
+  --fs-body-lg: 1rem;       /* base reading */
 }
 
 /* --- Base --- */
@@ -54,7 +73,7 @@ h1, h2, h3, h4, h5 {
   font-family: var(--font-pixel);
   color: var(--color-primary) !important;
   text-shadow: var(--glow-primary);
-  font-size: 0.85rem;
+  font-size: var(--fs-pixel-md);
   display: flex;
   align-items: center;
 }
@@ -67,7 +86,7 @@ h1, h2, h3, h4, h5 {
 
 .navbar-nav .nav-link {
   font-family: var(--font-pixel);
-  font-size: 0.55rem;
+  font-size: var(--fs-pixel-xs);
   color: var(--color-text) !important;
   transition: color var(--transition-speed), text-shadow var(--transition-speed);
 }
@@ -96,7 +115,7 @@ h1, h2, h3, h4, h5 {
   position: relative;
   display: inline-block;
   width: 100%;
-  font-size: 1.1rem;
+  font-size: var(--fs-pixel-lg);
   color: var(--color-primary);
   text-shadow: var(--glow-primary);
 }
@@ -104,7 +123,7 @@ h1, h2, h3, h4, h5 {
 .section-title::after {
   content: '● ● ●';
   display: block;
-  font-size: 0.6rem;
+  font-size: var(--fs-pixel-sm);
   color: var(--color-primary);
   margin: 12px auto 0;
   letter-spacing: 8px;
@@ -113,7 +132,7 @@ h1, h2, h3, h4, h5 {
 /* --- Scroll Indicator --- */
 .scroll-hint {
   font-family: var(--font-pixel);
-  font-size: 0.5rem;
+  font-size: var(--fs-pixel-xs);
   color: var(--color-text-muted);
   animation: hint-fade 2.5s ease-in-out infinite;
 }
@@ -147,7 +166,7 @@ h1, h2, h3, h4, h5 {
 }
 
 .hero-section h1 {
-  font-size: 1.8rem;
+  font-size: var(--fs-pixel-xl);
   text-shadow: var(--glow-primary);
 }
 
@@ -157,7 +176,7 @@ h1, h2, h3, h4, h5 {
 
 .hero-section .lead {
   font-family: var(--font-pixel);
-  font-size: 0.65rem;
+  font-size: var(--fs-pixel-sm);
   color: var(--color-secondary);
   text-shadow: var(--glow-cyan);
 }
@@ -165,9 +184,9 @@ h1, h2, h3, h4, h5 {
 .hero-section .btn-primary {
   background: var(--color-primary);
   border: none;
-  color: #000;
+  color: var(--color-ink);
   font-family: var(--font-pixel);
-  font-size: 0.6rem;
+  font-size: var(--fs-pixel-sm);
   padding: 12px 24px;
   box-shadow: var(--glow-primary);
   transition: transform var(--transition-speed), box-shadow var(--transition-speed);
@@ -239,14 +258,14 @@ section {
 
 .rpg-stat-value {
   font-family: var(--font-pixel);
-  font-size: 0.85rem;
+  font-size: var(--fs-pixel-md);
   color: var(--color-primary);
   text-shadow: var(--glow-primary);
 }
 
 .rpg-stat-label {
   font-family: var(--font-pixel);
-  font-size: 0.35rem;
+  font-size: var(--fs-pixel-2xs);
   color: var(--color-text-muted);
   margin-top: 2px;
   text-transform: uppercase;
@@ -257,14 +276,14 @@ section {
   .rpg-stat-item {
     padding: 8px 8px;
   }
-  .rpg-stat-value { font-size: 0.7rem; }
-  .rpg-stat-label { font-size: 0.3rem; }
+  .rpg-stat-value { font-size: var(--fs-pixel-md); }
+  .rpg-stat-label { font-size: var(--fs-pixel-2xs); }
 }
 
 /* --- About --- */
 .about-quote {
   font-family: var(--font-pixel);
-  font-size: 0.5rem;
+  font-size: var(--fs-pixel-xs);
   color: var(--color-primary);
   text-shadow: var(--glow-primary);
   border-left: 3px solid var(--color-primary);
@@ -283,14 +302,14 @@ section {
 
 .btn-outline-primary {
   font-family: var(--font-pixel);
-  font-size: 0.55rem;
+  font-size: var(--fs-pixel-xs);
   color: var(--color-primary);
   border-color: var(--color-primary);
 }
 
 .btn-outline-primary:hover {
   background: var(--color-primary);
-  color: #000;
+  color: var(--color-ink);
   box-shadow: var(--glow-primary);
 }
 
@@ -314,13 +333,13 @@ section {
 }
 
 .skill-card h5 {
-  font-size: 0.65rem;
+  font-size: var(--fs-pixel-sm);
   color: var(--color-text);
 }
 
 .skill-card .text-muted {
   color: var(--color-text-muted) !important;
-  font-size: 0.85rem;
+  font-size: var(--fs-body-sm);
 }
 
 /* --- Project Cards --- */
@@ -341,7 +360,7 @@ section {
 }
 
 .project-card .card-title {
-  font-size: 0.6rem;
+  font-size: var(--fs-pixel-sm);
   color: var(--color-primary);
 }
 
@@ -378,7 +397,7 @@ section {
 /* --- Latest Project Text --- */
 .latest-project-desc {
   color: var(--color-text-muted);
-  font-size: 0.9rem;
+  font-size: var(--fs-body-md);
   line-height: 1.6;
 }
 
@@ -439,7 +458,7 @@ section {
 
 /* --- Project Category --- */
 .project-category h3 {
-  font-size: 0.75rem;
+  font-size: var(--fs-pixel-md);
   color: var(--color-secondary);
   text-shadow: var(--glow-cyan);
 }
@@ -456,14 +475,14 @@ section {
 }
 
 .modal-title {
-  font-size: 0.7rem;
+  font-size: var(--fs-pixel-md);
   color: var(--color-primary);
   text-shadow: var(--glow-primary);
 }
 
 .modal-body p {
   color: var(--color-text-muted);
-  font-size: 0.9rem;
+  font-size: var(--fs-body-md);
   line-height: 1.7;
 }
 
@@ -520,7 +539,7 @@ section {
 .playable-cta__title {
   display: block;
   font-family: var(--font-pixel);
-  font-size: 0.5rem;
+  font-size: var(--fs-pixel-xs);
   color: var(--color-primary);
   text-shadow: var(--glow-primary);
   margin-bottom: 2px;
@@ -528,7 +547,7 @@ section {
 
 .playable-cta__desc {
   display: block;
-  font-size: 0.78rem;
+  font-size: var(--fs-body-sm);
   color: var(--color-text-muted);
   line-height: 1.4;
 }
@@ -536,9 +555,9 @@ section {
 .playable-cta__btn {
   flex-shrink: 0;
   background: var(--color-primary);
-  color: #000;
+  color: var(--color-ink);
   font-family: var(--font-pixel);
-  font-size: 0.45rem;
+  font-size: var(--fs-pixel-2xs);
   font-weight: 700;
   padding: 10px 22px;
   border: none;
@@ -553,7 +572,7 @@ section {
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
   background: var(--color-primary);
-  color: #000;
+  color: var(--color-ink);
 }
 
 @media (max-width: 576px) {
@@ -586,16 +605,16 @@ section {
 
 .form-label {
   font-family: var(--font-pixel);
-  font-size: 0.5rem;
+  font-size: var(--fs-pixel-xs);
   color: var(--color-text-muted);
 }
 
 .btn-primary {
   background: var(--color-primary);
   border: none;
-  color: #000;
+  color: var(--color-ink);
   font-family: var(--font-pixel);
-  font-size: 0.6rem;
+  font-size: var(--fs-pixel-sm);
 }
 
 .btn-primary:hover {
@@ -612,7 +631,7 @@ section {
 
 .tech-tag {
   font-family: var(--font-pixel);
-  font-size: 0.35rem;
+  font-size: var(--fs-pixel-2xs);
   background: rgba(0, 229, 255, 0.1);
   color: var(--color-secondary);
   border: 1px solid rgba(0, 229, 255, 0.3);
@@ -686,26 +705,26 @@ section {
 
 .timeline-period {
   font-family: var(--font-pixel);
-  font-size: 0.45rem;
+  font-size: var(--fs-pixel-2xs);
   color: var(--color-primary);
   text-shadow: var(--glow-primary);
 }
 
 .timeline-role {
-  font-size: 0.6rem;
+  font-size: var(--fs-pixel-sm);
   color: var(--color-text);
   margin: 8px 0 4px;
 }
 
 .timeline-company {
   font-family: var(--font-pixel);
-  font-size: 0.4rem;
+  font-size: var(--fs-pixel-2xs);
   color: var(--color-secondary);
 }
 
 .timeline-desc {
   color: var(--color-text-muted);
-  font-size: 0.85rem;
+  font-size: var(--fs-body-sm);
   margin-top: 8px;
   margin-bottom: 0;
 }
@@ -733,7 +752,7 @@ footer a:hover {
 
 footer p {
   font-family: var(--font-pixel);
-  font-size: 0.45rem;
+  font-size: var(--fs-pixel-2xs);
   color: var(--color-text-muted);
 }
 
@@ -823,16 +842,16 @@ section {
 /* --- Responsive pixel font sizes --- */
 @media (max-width: 768px) {
   .hero-section h1 { font-size: 1rem; }
-  .hero-section .lead { font-size: 0.5rem; }
-  .section-title { font-size: 0.8rem; }
-  .navbar-brand { font-size: 0.65rem; }
+  .hero-section .lead { font-size: var(--fs-pixel-xs); }
+  .section-title { font-size: var(--fs-pixel-md); }
+  .navbar-brand { font-size: var(--fs-pixel-sm); }
 }
 
 /* --- Play Now Button --- */
 .btn-play-now {
   font-family: var(--font-pixel);
-  font-size: 0.45rem;
-  color: #000;
+  font-size: var(--fs-pixel-2xs);
+  color: var(--color-ink);
   background: var(--color-primary);
   border: 2px solid var(--color-primary);
   border-radius: 4px;
@@ -845,7 +864,7 @@ section {
 .btn-play-now:hover {
   transform: scale(1.1);
   box-shadow: 0 0 16px #ffcc00, 0 0 32px #ffcc0088;
-  color: #000;
+  color: var(--color-ink);
   background: #ffd633;
 }
 
@@ -893,7 +912,7 @@ section {
   border: 2px solid var(--color-primary);
   color: var(--color-primary);
   font-family: var(--font-pixel);
-  font-size: 0.5rem;
+  font-size: var(--fs-pixel-xs);
   min-width: 36px;
   height: 28px;
   padding: 0 8px;
@@ -931,7 +950,7 @@ section {
 
 .playable-title {
   font-family: var(--font-pixel);
-  font-size: 0.6rem;
+  font-size: var(--fs-pixel-sm);
   color: var(--color-primary);
   text-shadow: var(--glow-primary);
 }
@@ -942,7 +961,7 @@ section {
 }
 .btn-outline-gplay:hover {
   background: #69f0ae;
-  color: #000;
+  color: var(--color-ink);
 }
 
 .playable-body {
@@ -1001,7 +1020,7 @@ section {
   border: 2px solid var(--color-primary);
   color: var(--color-primary);
   font-family: var(--font-pixel);
-  font-size: 0.5rem;
+  font-size: var(--fs-pixel-xs);
   min-width: 32px;
   height: 28px;
   padding: 0 6px;
@@ -1047,7 +1066,7 @@ section {
   border: 1px solid var(--color-primary);
   color: var(--color-primary);
   font-family: var(--font-pixel);
-  font-size: 0.45rem;
+  font-size: var(--fs-pixel-2xs);
   padding: 3px 8px;
   border-radius: 4px;
   box-shadow: 0 0 8px #ffcc0044;
@@ -1055,7 +1074,7 @@ section {
 }
 
 .playable-count-badge i {
-  font-size: 0.55rem;
+  font-size: var(--fs-pixel-xs);
 }
 
 /* --- Modal Meta Row (Duration + Role) --- */
@@ -1069,7 +1088,7 @@ section {
 
 .duration-badge {
   font-family: var(--font-pixel);
-  font-size: 0.45rem;
+  font-size: var(--fs-pixel-2xs);
   color: var(--color-primary);
   background: var(--color-bg-card);
   border: 1px solid var(--color-primary);
@@ -1080,7 +1099,7 @@ section {
 
 .role-badge {
   font-family: var(--font-pixel);
-  font-size: 0.45rem;
+  font-size: var(--fs-pixel-2xs);
   color: var(--color-secondary);
   background: var(--color-bg-card);
   border: 1px solid var(--color-secondary);
@@ -1097,7 +1116,7 @@ section {
 
 .impact-section h6 {
   font-family: var(--font-pixel);
-  font-size: 0.5rem;
+  font-size: var(--fs-pixel-xs);
   color: var(--color-primary);
   text-shadow: var(--glow-primary);
   margin-bottom: 10px;
@@ -1106,7 +1125,7 @@ section {
 .impact-item {
   margin-bottom: 8px;
   color: var(--color-text-muted);
-  font-size: 0.85rem;
+  font-size: var(--fs-body-sm);
   line-height: 1.6;
 }
 
@@ -1122,7 +1141,7 @@ section {
 
 .hypothesis-section h6 {
   font-family: var(--font-pixel);
-  font-size: 0.5rem;
+  font-size: var(--fs-pixel-xs);
   color: var(--color-primary);
   text-shadow: var(--glow-primary);
   margin-bottom: 10px;
@@ -1138,7 +1157,7 @@ section {
 
 .hypothesis-card h6 {
   font-family: var(--font-pixel);
-  font-size: 0.45rem;
+  font-size: var(--fs-pixel-2xs);
   color: var(--color-text);
   margin-bottom: 6px;
   display: flex;
@@ -1149,13 +1168,13 @@ section {
 }
 
 .hypothesis-card p {
-  font-size: 0.8rem;
+  font-size: var(--fs-body-sm);
   margin-bottom: 4px;
 }
 
 .hypothesis-status {
   font-family: var(--font-pixel);
-  font-size: 0.35rem;
+  font-size: var(--fs-pixel-2xs);
   padding: 2px 8px;
   border-radius: 2px;
   white-space: nowrap;
@@ -1180,7 +1199,7 @@ section {
 
 .metrics-section h6 {
   font-family: var(--font-pixel);
-  font-size: 0.5rem;
+  font-size: var(--fs-pixel-xs);
   color: var(--color-primary);
   text-shadow: var(--glow-primary);
   margin-bottom: 10px;
@@ -1191,7 +1210,7 @@ section {
   align-items: center;
   gap: 8px;
   padding: 6px 0;
-  font-size: 0.85rem;
+  font-size: var(--fs-body-sm);
   color: var(--color-text-muted);
   border-bottom: 1px solid #222244;
 }
@@ -1202,7 +1221,7 @@ section {
 
 .metric-item .metric-label {
   font-family: var(--font-pixel);
-  font-size: 0.4rem;
+  font-size: var(--fs-pixel-2xs);
   color: var(--color-text);
   min-width: 60px;
 }
@@ -1732,7 +1751,7 @@ html.light-theme .modal .btn-outline-warning:hover {
 
 .loading-text {
   font-family: var(--font-pixel);
-  font-size: 0.5rem;
+  font-size: var(--fs-pixel-xs);
   color: var(--color-primary);
   text-shadow: var(--glow-primary);
   margin-top: 12px;
@@ -1792,14 +1811,14 @@ html.light-theme .modal .btn-outline-warning:hover {
 }
 
 .skill-bar-header h5 {
-  font-size: 0.6rem;
+  font-size: var(--fs-pixel-sm);
   color: var(--color-text);
   margin: 0;
 }
 
 .skill-bar-desc {
   color: var(--color-text-muted);
-  font-size: 0.8rem;
+  font-size: var(--fs-body-sm);
   margin-bottom: 10px;
 }
 
@@ -1842,7 +1861,7 @@ html.light-theme .modal .btn-outline-warning:hover {
 
 .skill-bar-level {
   font-family: var(--font-pixel);
-  font-size: 0.4rem;
+  font-size: var(--fs-pixel-2xs);
   color: var(--color-primary);
   text-align: right;
   margin-top: 4px;
@@ -1865,7 +1884,7 @@ html.light-theme .modal .btn-outline-warning:hover {
 
 .filter-btn {
   font-family: var(--font-pixel);
-  font-size: 0.45rem;
+  font-size: var(--fs-pixel-2xs);
   padding: 6px 16px;
   border: 2px solid #333355;
   background: var(--color-bg-card);
@@ -1883,7 +1902,7 @@ html.light-theme .modal .btn-outline-warning:hover {
 .filter-btn.active {
   border-color: var(--color-primary);
   background: var(--color-primary);
-  color: #000;
+  color: var(--color-ink);
   box-shadow: var(--glow-primary);
 }
 
@@ -1921,8 +1940,8 @@ html.light-theme .modal .btn-outline-warning:hover {
    FEATURE: Responsive Improvements
    ======================================== */
 @media (max-width: 576px) {
-  .hero-section h1 { font-size: 0.85rem; }
-  .hero-section .lead { font-size: 0.45rem; }
+  .hero-section h1 { font-size: var(--fs-pixel-md); }
+  .hero-section .lead { font-size: var(--fs-pixel-2xs); }
 
   .rpg-stats-bar {
     flex-wrap: wrap;
@@ -1939,7 +1958,7 @@ html.light-theme .modal .btn-outline-warning:hover {
   }
 
   .filter-btn {
-    font-size: 0.35rem;
+    font-size: var(--fs-pixel-2xs);
     padding: 4px 10px;
   }
 
@@ -1957,7 +1976,7 @@ html.light-theme .modal .btn-outline-warning:hover {
   }
 
   .latest-project-desc {
-    font-size: 0.8rem;
+    font-size: var(--fs-body-sm);
   }
 
   .playable-header {
@@ -1971,14 +1990,14 @@ html.light-theme .modal .btn-outline-warning:hover {
 }
 
 @media (max-width: 400px) {
-  .hero-section h1 { font-size: 0.7rem; }
-  .section-title { font-size: 0.65rem; }
+  .hero-section h1 { font-size: var(--fs-pixel-sm); }
+  .section-title { font-size: var(--fs-pixel-sm); }
 
   .rpg-stat-item {
     flex: 1 1 100%;
   }
 
-  .navbar-brand { font-size: 0.55rem; }
+  .navbar-brand { font-size: var(--fs-pixel-xs); }
 }
 
 /* Smooth scroll for all internal links */
@@ -2003,5 +2022,132 @@ html {
   .project-card .card-body .d-flex.gap-2 {
     width: 100%;
     justify-content: center;
+  }
+}
+
+/* ========================================
+   better-web-ui improvements
+   (type scale tokens live in :root above)
+   ======================================== */
+
+/* ----------------------------------------
+   #5 Less centering — left-aligned, asymmetric section titles
+   Doctrine: don't center everything; left-aligned + asymmetry reads as
+   more intentional. Titles anchor left with the accent under the text,
+   not floating centered. Hero stays centered (a legitimate landing pattern).
+   ---------------------------------------- */
+.section-title.text-center {
+  text-align: left !important;
+  width: auto;
+}
+
+/* Move the "● ● ●" accent under the left edge of the title */
+.section-title::after {
+  margin-left: 0;
+  margin-right: auto;
+  letter-spacing: 6px;
+}
+
+/* Filter bar and stats read better left-anchored on wider screens */
+@media (min-width: 768px) {
+  .project-filter-bar {
+    justify-content: flex-start;
+  }
+  .rpg-stats-bar {
+    justify-content: flex-start;
+  }
+}
+
+/* ----------------------------------------
+   #4 Reduce border noise
+   Doctrine: use background shifts + subtle shadow before borders everywhere.
+   Soften the many hard 2px borders into quieter separators; let the
+   brand-colored border appear on hover as the intentional emphasis.
+   ---------------------------------------- */
+.rpg-stat-item,
+.skill-card,
+.project-card,
+.timeline-card,
+.skill-bar-card {
+  border-width: 1px;
+  border-color: #1e1e3a; /* quieter than #222244 / #333355 at rest */
+}
+
+.filter-btn {
+  border-width: 1px;
+  border-color: #1e1e3a;
+}
+
+/* Keep the deliberate accent frame on the navbar/footer/modal/playable,
+   but everyday content surfaces stay calm until interaction. */
+
+/* ----------------------------------------
+   #3 Contrast + readability floor for pixel labels
+   Press Start 2P is dense; enforce spacing/line-height so small labels
+   stay legible even at the constrained scale.
+   ---------------------------------------- */
+.rpg-stat-label,
+.tech-tag,
+.hypothesis-status,
+.metric-item .metric-label,
+.skill-bar-level,
+.timeline-company {
+  line-height: 1.5;
+}
+
+/* Muted body copy: a touch more line-height for the lifted muted color */
+.latest-project-desc,
+.modal-body p,
+.timeline-desc,
+.impact-item,
+.skill-bar-desc {
+  line-height: 1.6;
+}
+
+/* ----------------------------------------
+   #2 Respect prefers-reduced-motion
+   Doctrine + a11y: honor the OS setting. Disable looping/decorative motion,
+   keep content visible (no reliance on scroll-reveal to show content).
+   JS also skips the particle canvas and typing loop (see main.js).
+   ---------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  /* Neutralize all transitions/animations globally */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Ensure scroll-reveal content is always visible without the animation */
+  .scroll-reveal,
+  .scroll-reveal.from-left,
+  .scroll-reveal.from-right,
+  .scroll-reveal.scale-up {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Stop looping decorative animations */
+  .scroll-arrow,
+  .scroll-hint,
+  .loading-text,
+  .typing-cursor,
+  .skill-bar-fill::after,
+  .project-card:hover .btn-detail,
+  .project-card:hover .btn-play-now {
+    animation: none !important;
+  }
+
+  /* Skill bars: show final width immediately instead of animating */
+  .skill-bar-fill.animated {
+    transition: none !important;
+  }
+
+  /* Hide the retro scanline (subtle but continuous) */
+  .scanline-overlay {
+    display: none;
   }
 }

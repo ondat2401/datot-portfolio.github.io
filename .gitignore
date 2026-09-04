@@ -1,0 +1,6 @@
+# Agent tooling / skills (not part of the portfolio site)
+better-web-ui/
+better-web-ui-skills/
+
+# OS files
+.DS_Store

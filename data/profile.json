@@ -1,6 +1,6 @@
 {
   "hero": {
-    "name": "Ôn Thành Đạt",
+    "name": "On Thanh Dat",
     "tagline": "Game Developer & Playable Ads Specialist",
     "cta": "View Projects"
   },
@@ -11,9 +11,9 @@
     "quote": ""
   },
   "stats": [
-    { "icon": "⚡", "label": "Years of Experience", "value": "auto", "startDate": "2023-01" },
-    { "icon": "🎮", "label": "Projects Shipped", "value": "13+" },
-    { "icon": "📱", "label": "Playable Ads Built", "value": "10+" }
+    { "icon": "⚡", "label": "Years of Experience", "value": "auto", "startDate": "2024-01" },
+    { "icon": "🎮", "label": "Projects Shipped", "value": "3+" },
+    { "icon": "📱", "label": "Playable Ads Built", "value": "50+" }
   ],
   "skills": [
     { "icon": "bi-unity", "title": "Unity / C#", "desc": "Core game development, 2D/3D, optimization" },

@@ -4,6 +4,12 @@
  */
 
 const PROJECTS_PER_PAGE = 6;
+
+// Respect the user's OS-level "reduce motion" preference.
+// Used to skip heavy JS-driven animations (particles, typing loop).
+const prefersReducedMotion = window.matchMedia &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 const pageState = {}; // track current page per category
 let allCategories = []; // store for modal lookup
 let allHighlights = []; // store highlights for deep link lookup
@@ -906,6 +912,12 @@ function initParticles() {
   const canvas = document.getElementById('particleCanvas');
   if (!canvas) return;
 
+  // Skip the animated background entirely when the user prefers reduced motion.
+  if (prefersReducedMotion) {
+    canvas.style.display = 'none';
+    return;
+  }
+
   const ctx = canvas.getContext('2d');
   const PARTICLE_COUNT = 50;
 
@@ -1181,6 +1193,14 @@ function initTypingEffect(hero, typingConfig) {
   const typeSpeed = cfg.typeSpeed || 60;
   const deleteSpeed = cfg.deleteSpeed || 30;
   const pauseDuration = cfg.pauseDuration || 2000;
+
+  // Reduced motion: show the first phrase statically, skip the type/delete loop.
+  if (prefersReducedMotion) {
+    target.textContent = phrases[0] || '';
+    const cursor = document.querySelector('.typing-cursor');
+    if (cursor) cursor.style.display = 'none';
+    return;
+  }
 
   let phraseIdx = 0;
   let charIdx = 0;
