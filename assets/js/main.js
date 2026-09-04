@@ -127,7 +127,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   initNavScroll();
-  initContactForm();
   initParticles();
   initThemeToggle();
   initScrollReveal();
@@ -175,8 +174,7 @@ function renderSectionTitles(titles) {
     about: 'titleAbout',
     skills: 'titleSkills',
     projects: 'titleProjects',
-    experience: 'titleExperience',
-    contact: 'titleContact'
+    experience: 'titleExperience'
   };
   Object.entries(map).forEach(([key, id]) => {
     const el = document.getElementById(id);
@@ -879,37 +877,6 @@ function initNavScroll() {
       }
     });
   });
-}
-
-function initContactForm() {
-  const form = document.getElementById('contactForm');
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = form.querySelector('button[type="submit"]');
-      btn.disabled = true;
-      btn.textContent = 'Sending...';
-
-      try {
-        const res = await fetch(form.action, {
-          method: 'POST',
-          body: new FormData(form),
-          headers: { 'Accept': 'application/json' }
-        });
-        if (res.ok) {
-          btn.textContent = 'Sent!';
-          form.reset();
-          setTimeout(() => { btn.textContent = 'Send Message'; btn.disabled = false; }, 3000);
-        } else {
-          btn.textContent = 'Error, try again';
-          btn.disabled = false;
-        }
-      } catch {
-        btn.textContent = 'Error, try again';
-        btn.disabled = false;
-      }
-    });
-  }
 }
 
 // --- Particle System ---
